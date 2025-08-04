@@ -4,11 +4,21 @@
 :- begin_tests(pa1).
 
 
+test(a_except) :-
+    assert_exception(throw(pa_exception)),
+    assert_exception(assert_exception(true)),
+    !.
+
+
 test(a_truth) :-
     assert_true(assert_true(true)),
     assert_false(assert_true(false)),
     assert_true(assert_false(false)),
     assert_false(assert_false(true)),
+
+    % TODO
+    % assert_exception(assert_true(false)),
+
     !.
 
 
