@@ -3,9 +3,11 @@
 
 :- begin_tests(pa1).
 
-test(meta_tests) :-
+test(meta_pass) :-
     assert_test_passes(assert_test_fails(assert_true(false))),
     assert_test_fails(assert_test_passes(assert_true(false))),
+    assert_test_passes(assert_test_passes(assert_true(true))),
+    assert_test_fails(assert_test_fails(assert_true(true))),
     !.
 
 test(a_except) :-
