@@ -3,28 +3,28 @@
 
 :- begin_tests(pa1).
 
+test(meta_tests) :-
+    assert_test_passes(assert_test_fails(assert_true(false))),
+    assert_test_fails(assert_test_passes(assert_true(false))),
+    !.
 
 test(a_except) :-
     assert_exception(throw(pa_exception)),
     assert_exception(assert_exception(true)),
     !.
 
-
 test(a_truth) :-
-    assert_true(assert_true(true)),
-    assert_false(assert_true(false)),
-    assert_true(assert_false(false)),
-    assert_false(assert_false(true)),
-
-    % TODO
-    % assert_exception(assert_true(false)),
-
+    assert_test_passes(assert_true(true)),
+    assert_test_fails(assert_true(false)),
+    assert_test_passes(assert_false(false)),
+    assert_test_fails(assert_false(true)),
     !.
-
 
 test(a_equals) :-
     assert_equals(3, 3),
-    assert_equals(dog, dog).
-
+    assert_equals(dog, dog),
+    assert_test_fails(assert_equals(7, 6)),
+    assert_test_fails(assert_equals(dog, cat)),
+    !.
 
 :- end_tests(pa1).
