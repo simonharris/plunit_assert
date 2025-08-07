@@ -1,5 +1,6 @@
 :- module(plunit_assert, [
     assert_equals/2,
+    assert_not_equals/2,
     assert_exception/1,
     assert_false/1,
     assert_true/1,
@@ -7,6 +8,7 @@
     assert_test_fails/1,
     assert_test_passes/1
 ]).
+:- dynamic prolog:assertion_failed/2.
 
 
 assert_true(Goal) :-
@@ -18,20 +20,33 @@ assert_false(Goal) :-
 assert_equals(A, B) :-
     assertion(A == B).
 
+assert_not_equals(A, B) :-
+    assertion(A \= B).
+
 assert_exception(Goal) :-
     catch(Goal, _, true),
     !.
 
+
+% meta-meta-tests -------------------------------------------------------------
+
+
 assert_test_fails(Goal) :-
-    asserta((prolog:assertion_failed(Reason, Somegoal) :-
-		    pa_assertion_failed(Reason, Somegoal)),
-	    Ref),
-    Goal,
-    erase(Ref).
+    setup_call_cleanup(
+        asserta((prolog:assertion_failed(Reason, Somegoal) :-
+                    pa_assertion_failed(Reason, Somegoal),
+                    nb_setval(assertion_failed, true)),
+                Ref),
+        (nb_setval(assertion_failed, false),
+         catch(Goal, _, true),
+         nb_getval(assertion_failed, Failed)),
+        erase(Ref)
+    ),
+    Failed == true.
 
 assert_test_passes(Goal) :-
     Goal.
 
 pa_assertion_failed(_, _) :-
-    % =format(user_error, '~w~n', 'Assertion failed and caught!'),
-    true.
+    %writeln('Captured test fail'),
+    !.
