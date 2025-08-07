@@ -2,10 +2,12 @@
     assert_equals/2,
     assert_not_equals/2,
     assert_is/2,
+    assert_is_not/2,
     % assert_exception/1,
     assert_false/1,
     assert_true/1,
     assert_unbound/1,
+    assert_not_unbound/1,
     % Meta stuff - not really part of the plunit_assert API
     assert_test_fails/1,
     assert_test_passes/1
@@ -68,11 +70,22 @@ assert_not_equals(A, B) :-
 % any arithmetic evaluations
 %
 % @arg A The first of the terms to be compared
-% @arg A The second of the terms to be compared
+% @arg B The second of the terms to be compared
 % @see assertion/1
 % @see ==/2
 assert_is(A, B) :-
     assertion(A == B).
+
+
+%% assert_is_not(+A, +B) is semidet
+%
+% Test that A and B are not identical terms
+%
+% @arg A The first of the terms to be compared
+% @arg B The second of the terms to be compared
+% @see assert_is/2
+assert_is_not(A, B) :-
+    assertion(A \== B).
 
 
 % assert_exception(Goal) :-
@@ -80,18 +93,29 @@ assert_is(A, B) :-
 %     !.
 
 
-%! assert_unbound(+Var) is det
+%! assert_unbound(+Var) is semidet
 %
 %  Test that Var is unbound
 %
 % This is analogous to isNul() or isNone() in other xUnit implementations
 %
-% @arg Goal The goal to be tested
+% @arg Var The variable to be tested for boundness
 % @see assertion/1
 assert_unbound(Var) :-
     assertion(var(Var)).
 
-% meta-meta-tests -------------------------------------------------------------
+%! assert_not_unbound(+Var) is semidet
+%
+%  Test that Var is not unbound
+%
+% @arg Var The variable to be tested for unboundness
+% @see assert_unbound/1
+assert_not_unbound(Var) :-
+    assertion(\+ var(Var)).
+
+
+% meta-tests ------------------------------------------------------------------
+
 
 %! assert_test_fails(+Goal) is semidet
 %
@@ -122,6 +146,3 @@ assert_test_passes(Goal) :-
 pa_assertion_failed(_, _) :-
     %writeln('Captured test fail'),
     !.
-
-
-

@@ -47,29 +47,35 @@ test(pa_identity) :-
     assert_test_passes(assert_is(B, B)),
     !.
 
-test(pa_identity) :-
-    assert_is(foo(cat, 3), foo(cat, 3)),
-    assert_test_fails(assert_is(foo(dog, 4), foo(cat, 3))),
-    assert_test_fails(assert_is(dog, cat)),
-    assert_test_passes(assert_is(dog, dog)),
-    assert_test_passes(assert_is(B, B)),
+test(pa_not_identity) :-
+    assert_test_passes(assert_is_not(1, 2)),
+    assert_test_passes(assert_is_not(cat, dog)),
+    assert_test_passes(assert_is_not(foo(cat, 3), foo(cat, 4))),
+    assert_test_fails(assert_is_not(3, 3)),
+    assert_test_fails(assert_is_not(cat, cat)),
+    assert_test_fails(assert_is_not(foo(cat, 3), foo(cat, 3))),
     !.
 
 test(pa_identity_vs_equality) :-
-
     A = 1 + 2,
     B = 3,
-
     assert_test_passes(assert_equals(A, B)),
     assert_test_fails(assert_is(A, B)),
     !.
 
-test(ps_binding) :-
-
-    assert_unbound(_),
-
+test(pa_unbound) :-
+    assert_test_passes(assert_unbound(_)),
     A = 1,
     assert_test_fails(assert_unbound(A)),
+    assert_test_fails(assert_unbound(cat)),
+    !.
+
+test(pa_not_unbound) :-
+
+    A = 1,
+    assert_test_passes(assert_not_unbound(A)),
+    assert_test_passes(assert_not_unbound(1)),
+    assert_test_fails(assert_not_unbound(_)),
     !.
 
 :- end_tests(pa1).
