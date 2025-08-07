@@ -1,7 +1,8 @@
 :- module(plunit_assert, [
     assert_equals/2,
     assert_not_equals/2,
-    assert_exception/1,
+    assert_is/2,
+    % assert_exception/1,
     assert_false/1,
     assert_true/1,
     % Meta stuff - not really part of the plunit_assert API
@@ -18,6 +19,9 @@ assert_false(Goal) :-
     assertion(\+ Goal).
 
 assert_equals(A, B) :-
+    assertion(A == B; A =:= B).
+
+assert_is(A, B) :-
     assertion(A == B).
 
 assert_not_equals(A, B) :-
