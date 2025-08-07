@@ -5,6 +5,7 @@
     % assert_exception/1,
     assert_false/1,
     assert_true/1,
+    assert_unbound/1,
     % Meta stuff - not really part of the plunit_assert API
     assert_test_fails/1,
     assert_test_passes/1
@@ -31,6 +32,8 @@ assert_exception(Goal) :-
     catch(Goal, _, true),
     !.
 
+assert_unbound(Var) :-
+    assertion(var(Var)).
 
 % meta-meta-tests -------------------------------------------------------------
 
