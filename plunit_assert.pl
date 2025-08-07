@@ -1,3 +1,10 @@
+/** <module> The test API for plunit_assert
+
+A unit testing library for Prolog, providing an expressive xUnit-like API for PlUnit.
+
+@author Simon Harding <github@pointbeing.net?
+@license MIT
+*/
 :- module(plunit_assert, [
     assert_equals/2,
     assert_not_equals/2,
@@ -13,9 +20,21 @@
 :- dynamic prolog:assertion_failed/2.
 
 
+%% assert_true(+Goal) is det
+%
+%  Test that Goal succeeds and therefore is truthy
+%
+%  @arg Goal The goal to be tested
+%  @see assertion/1
 assert_true(Goal) :-
     assertion(Goal).
 
+%% assert_false(+Goal) is det
+%
+%  Test that Goal fails and therefore is falsy 3
+%
+%  @arg Goal The goal to be tested
+%  @see assertion/1
 assert_false(Goal) :-
     assertion(\+ Goal).
 
@@ -32,6 +51,15 @@ assert_exception(Goal) :-
     catch(Goal, _, true),
     !.
 
+
+%% assert_unbound(+Var) is det
+%
+%  Test that Var is unbound
+%
+%  This is analogous to isNul() or isNone() in other xUnit implementations
+%
+%  @arg Goal The goal to be tested
+%  @see assertion/1
 assert_unbound(Var) :-
     assertion(var(Var)).
 
@@ -57,3 +85,6 @@ assert_test_passes(Goal) :-
 pa_assertion_failed(_, _) :-
     %writeln('Captured test fail'),
     !.
+
+
+
