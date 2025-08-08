@@ -72,11 +72,46 @@ test(pa_unbound) :-
     !.
 
 test(pa_not_unbound) :-
-
     A = 1,
     assert_test_passes(assert_not_unbound(A)),
     assert_test_passes(assert_not_unbound(1)),
     assert_test_fails(assert_not_unbound(_)),
     !.
+
+test(pa_in) :-
+    % in list
+    assert_in(1, [1, 2, 3]),
+    assert_test_fails(assert_in(4, [1, 2, 3])),
+    % in dict
+    assert_in(a, dict{a:1,b:2,c:3}),
+    assert_test_fails(assert_in(d, dict{a:1,b:2,c:3})),
+    % in set (just a special example of list)
+    List = [1, 1, 2, 3],
+    sort(List, Sortedset),
+    assert_in(1, Sortedset),
+    assert_test_fails(assert_in(4, Sortedset)),
+    !.
+
+
+test(pa_not_in) :-
+    % not in list
+    assert_not_in(7, [1, 2, 3]),
+    assert_test_fails(assert_not_in(3, [1, 2, 3])),
+    % not in dict
+    assert_not_in(d, dict{a:1,b:2,c:3}),
+    assert_test_fails(assert_not_in(a, dict{a:1,b:2,c:3})),
+    % in set (just a special example of list)
+    List = [1, 1, 2, 3],
+    sort(List, Sortedset),
+    assert_not_in(7, Sortedset),
+    assert_test_fails(assert_not_in(3, Sortedset)),
+    !.
+
+
+
+% Compound terms: These are terms with a functor and a fixed number of arguments,
+% like point(X, Y) or tree(Node, Left, Right).
+
+
 
 :- end_tests(pa1).

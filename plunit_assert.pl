@@ -8,6 +8,8 @@
     assert_true/1,
     assert_unbound/1,
     assert_not_unbound/1,
+    assert_in/2,
+    assert_not_in/2,
     % Meta stuff - not really part of the plunit_assert API
     assert_test_fails/1,
     assert_test_passes/1
@@ -120,6 +122,39 @@ assert_unbound(Var) :-
 % @see assert_unbound/1
 assert_not_unbound(Var) :-
     assertion(\+ var(Var)).
+
+
+%! assert_in(Var, Collection) is semidet
+%
+% Test that Var is in Collection
+%
+% This checks for list/set membership, and also whether Var is a valid
+% dictionary key in Collection
+%
+% @arg Var The needle
+% @arg Collection The haystack
+% @see assertion/1
+assert_in(Var, Collection) :-
+    assertion((
+        member(Var, Collection) ;
+        get_dict(Var, Collection, _)
+    )).
+
+%! assert_not_in(Var, Collection) is semidet
+%
+% Test that Var is not in Collection
+%
+% This checks for list/set membership, and also whether Var is a valid
+% dictionary key in Collection
+%
+% @arg Var The needle
+% @arg Collection The haystack
+% @see assert_in/2
+assert_not_in(Var, Collection) :-
+    assertion(\+ (
+        member(Var, Collection) ;
+        ( is_dict(Collection), get_dict(Var, Collection, _) )
+    )).
 
 
 % meta-tests ------------------------------------------------------------------
