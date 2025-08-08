@@ -11,10 +11,11 @@
 %     assert_test_fails(assert_test_fails(assert_true(true))),
 %     !.
 
-% test(pa_except) :-
-%     assert_exception(throw(pa_exception)),
-%     assert_exception(assert_exception(true)),
-%     !.
+test(pa_exception) :-
+    assert_exception(throw(pa_exception)),
+    assert_test_passes(assert_exception(throw(pa_exception))),
+    assert_test_fails(assert_exception(true)),
+    !.
 
 test(pa_truth) :-
     assert_test_passes(assert_true(true)),

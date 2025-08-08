@@ -3,7 +3,7 @@
     assert_not_equals/2,
     assert_is/2,
     assert_is_not/2,
-    % assert_exception/1,
+    assert_exception/1,
     assert_false/1,
     assert_true/1,
     assert_unbound/1,
@@ -22,7 +22,7 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 :- dynamic prolog:assertion_failed/2.
 
 
-%% assert_true(+Goal) is semidet
+%! assert_true(+Goal) is semidet
 %
 % Test that Goal succeeds and therefore is truthy
 %
@@ -31,7 +31,7 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 assert_true(Goal) :-
     assertion(Goal).
 
-%% assert_false(+Goal) is semidet
+%! assert_false(+Goal) is semidet
 %
 % Test that Goal fails and therefore is falsy
 %
@@ -59,7 +59,7 @@ assert_equals(A, B) :-
 assert_not_equals(A, B) :-
     assertion(A \= B).
 
-%% assert_is(+A, +B) is semidet
+%! assert_is(+A, +B) is semidet
 %
 % Test that A and B are identical terms
 %
@@ -76,8 +76,7 @@ assert_not_equals(A, B) :-
 assert_is(A, B) :-
     assertion(A == B).
 
-
-%% assert_is_not(+A, +B) is semidet
+%! assert_is_not(+A, +B) is semidet
 %
 % Test that A and B are not identical terms
 %
@@ -87,15 +86,24 @@ assert_is(A, B) :-
 assert_is_not(A, B) :-
     assertion(A \== B).
 
-
-% assert_exception(Goal) :-
-%     catch(Goal, _, true),
-%     !.
-
+%! assert_exception(+Goal) is semidet
+%
+% Test that an exception is thrown during the invocation of Goal
+%
+% @arg Goal The goal to be tested
+% @see assertion/1
+assert_exception(Goal) :-
+    setup_call_cleanup(
+        nb_setval(got_exception, false),
+        catch(Goal, _, nb_setval(got_exception, true)),
+        true
+    ),
+    nb_getval(got_exception, Gotex),
+    ( Gotex -> true; assertion(false)).
 
 %! assert_unbound(+Var) is semidet
 %
-%  Test that Var is unbound
+% Test that Var is unbound
 %
 % This is analogous to isNul() or isNone() in other xUnit implementations
 %
@@ -106,7 +114,7 @@ assert_unbound(Var) :-
 
 %! assert_not_unbound(+Var) is semidet
 %
-%  Test that Var is not unbound
+% Test that Var is not unbound
 %
 % @arg Var The variable to be tested for unboundness
 % @see assert_unbound/1
