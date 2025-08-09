@@ -1,4 +1,4 @@
-:- ensure_loaded('../plunit_assert').
+:- use_module('../plunit_assert').
 
 
 :- begin_tests(pa1).
@@ -106,6 +106,28 @@ test(pa_not_in) :-
     assert_not_in(7, Sortedset),
     assert_test_fails(assert_not_in(3, Sortedset)),
     !.
+
+
+test(is_type) :-
+    assert_test_passes(assert_type(3, number)),
+    assert_test_passes(assert_type(3, integer)),
+    assert_test_passes(assert_type(3.6, number)),
+    assert_test_passes(assert_type(3.6, float)),
+    assert_test_passes(assert_type(sup, atom)),
+    assert_test_passes(assert_type(foo(bar), compound)),
+
+    assert_test_fails(assert_type(2, float)),
+    assert_test_fails(assert_type(2.0, integer)),
+    assert_test_fails(assert_type('hello world', number)),
+    assert_test_fails(assert_type(6, atom)),
+    assert_test_fails(assert_type(_X, atom)),
+    assert_test_fails(assert_type(foo, compound)),
+
+    assert_test_fails(assert_type(foo, _Y)),
+
+    !.
+
+
 
 
 

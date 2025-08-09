@@ -10,6 +10,7 @@
     assert_not_unbound/1,
     assert_in/2,
     assert_not_in/2,
+    assert_type/2,
     % Meta stuff - not really part of the plunit_assert API
     assert_test_fails/1,
     assert_test_passes/1
@@ -124,7 +125,7 @@ assert_not_unbound(Var) :-
     assertion(\+ var(Var)).
 
 
-%! assert_in(Var, Collection) is semidet
+%! assert_in(+Var, +Collection) is semidet
 %
 % Test that Var is in Collection
 %
@@ -140,7 +141,7 @@ assert_in(Var, Collection) :-
         get_dict(Var, Collection, _)
     )).
 
-%! assert_not_in(Var, Collection) is semidet
+%! assert_not_in(+Var, +Collection) is semidet
 %
 % Test that Var is not in Collection
 %
@@ -155,6 +156,24 @@ assert_not_in(Var, Collection) :-
         member(Var, Collection) ;
         ( is_dict(Collection), get_dict(Var, Collection, _) )
     )).
+
+%! assert_type(+Term, +Type) is semidet
+%
+% Test that Var is of type Type
+%
+% @arg Term
+% @arg Type
+% @tbd list, dict
+% @tbd Compound types
+% @see assertion/1
+assert_type(Term, float) :- assertion(float(Term)).
+assert_type(Term, integer) :- assertion(integer(Term)).
+assert_type(Term, number) :- assertion(number(Term)).
+assert_type(Term, atom) :- assertion(atom(Term)).
+assert_type(Term, compound) :- assertion(compound(Term)).
+
+% assert_type(Term, Type) :-
+%     true.
 
 
 % meta-tests ------------------------------------------------------------------
