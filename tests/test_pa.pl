@@ -131,14 +131,14 @@ test(pa_is_atom) :-
     assert_test_fails(assert_type(_X, atom)),
     !.
 
-test(is_compound) :-
+test(pa_is_compound) :-
     assert_test_passes(assert_type(foo(bar), compound)),
     assert_test_fails(assert_type(foo, compound)),
     assert_test_fails(assert_type(a, compound)),
     assert_test_fails(assert_type(_Var, compound)),
     !.
 
-test(is_list) :-
+test(pa_is_list) :-
     assert_test_passes(assert_type([], list)),
     assert_test_passes(assert_type([foo, bar], list)),
     assert_test_fails(assert_type(foo(bar), list)),
@@ -147,7 +147,7 @@ test(is_list) :-
     assert_test_fails(assert_type(_Var, list)),
     !.
 
-test(is_dict) :-
+test(pa_is_dict) :-
     assert_test_passes(assert_type(_{}, dict)),
     assert_test_passes(assert_type(foo{bar:3}, dict)),
     assert_test_fails(assert_type(foo(bar), dict)),
@@ -155,6 +155,16 @@ test(is_dict) :-
     assert_test_fails(assert_type(a, dict)),
     assert_test_fails(assert_type(_Var, dict)),
     !.
+
+test(pa_not_type) :-
+    assert_test_passes(assert_not_type(3, list)),
+    assert_test_passes(assert_not_type(3, atom)),
+    assert_test_passes(assert_not_type(3, float)),
+    assert_test_passes(assert_not_type(3.0, integer)),
+    assert_test_passes(assert_not_type(foo, list)),
+    % etc
+    !.
+
 
 
 % Compound terms: These are terms with a functor and a fixed number of arguments,

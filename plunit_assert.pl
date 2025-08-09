@@ -11,6 +11,7 @@
     assert_in/2,
     assert_not_in/2,
     assert_type/2,
+    assert_not_type/2,
     % Meta stuff - not really part of the plunit_assert API
     assert_test_fails/1,
     assert_test_passes/1
@@ -19,7 +20,7 @@
 
 A unit testing library for Prolog, providing an expressive xUnit-like API for PlUnit.
 
-@author Simon Harding <github@pointbeing.net?
+@author Simon Harding <github@pointbeing.net>
 @license MIT
 */
 :- dynamic prolog:assertion_failed/2.
@@ -66,7 +67,7 @@ assert_not_equals(A, B) :-
 %
 % Test that A and B are identical terms
 %
-% Use ==/2 to check for term identity, which means it compares the terms A and
+% Uses ==/2 to check for term identity, which means it compares the terms A and
 % B structurally, including the functor and arity (number of arguments) of the
 % terms and the equality of each corresponding argument. Thus, succeeds if A
 % and B are identical terms, without attempting to unify variables or perform
@@ -102,13 +103,13 @@ assert_exception(Goal) :-
         true
     ),
     nb_getval(got_exception, Gotex),
-    ( Gotex -> true; assertion(false)).
+    ( Gotex -> true; assertion(false) ).
 
 %! assert_unbound(+Var) is semidet
 %
 % Test that Var is unbound
 %
-% This is analogous to isNul() or isNone() in other xUnit implementations
+% This is analogous to isNull() or isNone() in other xUnit implementations
 %
 % @arg Var The variable to be tested for boundness
 % @see assertion/1
@@ -175,8 +176,20 @@ assert_type(Term, compound) :- assertion(compound(Term)).
 assert_type(Term, list) :- assertion(is_list(Term)).
 assert_type(Term, dict) :- assertion(is_dict(Term)).
 
-% assert_type(Term, Type) :-
-%     true.
+%! assert_not_type(+Term, +Type) is semidet
+%
+% Test that Var is not of type Type
+%
+% @arg Term The term to be tested
+% @arg Type The type to be un-asserted
+% @see assert_type/2
+assert_not_type(Term, float) :- assertion(\+ float(Term)).
+assert_not_type(Term, integer) :- assertion(\+ integer(Term)).
+assert_not_type(Term, number) :- assertion(\+ number(Term)).
+assert_not_type(Term, atom) :- assertion(\+ atom(Term)).
+assert_not_type(Term, compound) :- assertion(\+ compound(Term)).
+assert_not_type(Term, list) :- assertion(\+ is_list(Term)).
+assert_not_type(Term, dict) :- assertion(\+ is_dict(Term)).
 
 
 % meta-tests ------------------------------------------------------------------
