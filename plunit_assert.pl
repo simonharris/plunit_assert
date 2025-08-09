@@ -161,9 +161,10 @@ assert_not_in(Var, Collection) :-
 %
 % Test that Var is of type Type
 %
-% @arg Term
-% @arg Type
-% @tbd list, dict
+% Supported types are: number, integer, float, atom, compound, list, dict
+%
+% @arg Term The term to be tested
+% @arg Type The type to be asserted
 % @tbd Compound types
 % @see assertion/1
 assert_type(Term, float) :- assertion(float(Term)).
@@ -171,6 +172,8 @@ assert_type(Term, integer) :- assertion(integer(Term)).
 assert_type(Term, number) :- assertion(number(Term)).
 assert_type(Term, atom) :- assertion(atom(Term)).
 assert_type(Term, compound) :- assertion(compound(Term)).
+assert_type(Term, list) :- assertion(is_list(Term)).
+assert_type(Term, dict) :- assertion(is_dict(Term)).
 
 % assert_type(Term, Type) :-
 %     true.

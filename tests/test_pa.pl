@@ -108,27 +108,53 @@ test(pa_not_in) :-
     !.
 
 
-test(is_type) :-
+test(pa_is_number) :-
     assert_test_passes(assert_type(3, number)),
-    assert_test_passes(assert_type(3, integer)),
     assert_test_passes(assert_type(3.6, number)),
-    assert_test_passes(assert_type(3.6, float)),
-    assert_test_passes(assert_type(sup, atom)),
-    assert_test_passes(assert_type(foo(bar), compound)),
-
-    assert_test_fails(assert_type(2, float)),
-    assert_test_fails(assert_type(2.0, integer)),
     assert_test_fails(assert_type('hello world', number)),
-    assert_test_fails(assert_type(6, atom)),
-    assert_test_fails(assert_type(_X, atom)),
-    assert_test_fails(assert_type(foo, compound)),
-
-    assert_test_fails(assert_type(foo, _Y)),
-
     !.
 
+test(pa_is_integer) :-
+    assert_test_passes(assert_type(3, integer)),
+    assert_test_fails(assert_type(2.0, integer)),
+    assert_test_fails(assert_type(bar, integer)),
+    !.
 
+test(pa_is_float) :-
+    assert_test_passes(assert_type(3.6, float)),
+    assert_test_fails(assert_type(2, float)),
+    !.
 
+test(pa_is_atom) :-
+    assert_test_passes(assert_type(sup, atom)),
+    assert_test_fails(assert_type(6, atom)),
+    assert_test_fails(assert_type(_X, atom)),
+    !.
+
+test(is_compound) :-
+    assert_test_passes(assert_type(foo(bar), compound)),
+    assert_test_fails(assert_type(foo, compound)),
+    assert_test_fails(assert_type(a, compound)),
+    assert_test_fails(assert_type(_Var, compound)),
+    !.
+
+test(is_list) :-
+    assert_test_passes(assert_type([], list)),
+    assert_test_passes(assert_type([foo, bar], list)),
+    assert_test_fails(assert_type(foo(bar), list)),
+    assert_test_fails(assert_type(foo, list)),
+    assert_test_fails(assert_type(a, list)),
+    assert_test_fails(assert_type(_Var, list)),
+    !.
+
+test(is_dict) :-
+    assert_test_passes(assert_type(_{}, dict)),
+    assert_test_passes(assert_type(foo{bar:3}, dict)),
+    assert_test_fails(assert_type(foo(bar), dict)),
+    assert_test_fails(assert_type(foo, dict)),
+    assert_test_fails(assert_type(a, dict)),
+    assert_test_fails(assert_type(_Var, dict)),
+    !.
 
 
 % Compound terms: These are terms with a functor and a fixed number of arguments,
