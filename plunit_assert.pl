@@ -2,9 +2,9 @@
     assert_equals/2,
     assert_not_equals/2,
     assert_gt/2,
-    % assert_gte/2,
+    assert_gte/2,
     assert_lt/2,
-    % assert_lte/2,
+    assert_lte/2,
     assert_is/2,
     assert_is_not/2,
     assert_exception/1,
@@ -212,6 +212,24 @@ assert_gt(A, B) :-
 % @arg B
 assert_lt(A, B) :-
     assertion(A < B).
+
+%! assert_gte(+A, +B) is semidet
+%
+% Test that A is greater than or equal to B
+%
+% @arg A
+% @arg B
+assert_gte(A, B) :-
+    assertion(A >= B).
+
+%! assert_lte(+A, +B) is semidet
+%
+% Test that A is less than or equal to B
+%
+% @arg A
+% @arg B
+assert_lte(A, B) :-
+    assertion(A =< B).
 
 
 % meta-tests ------------------------------------------------------------------
