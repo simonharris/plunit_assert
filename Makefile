@@ -18,8 +18,9 @@ pack: clean
 	mkdir -p pack/prolog
 	cp plunit_assert.pl pack/prolog/
 	cp pack.pl.dist pack/pack.pl
-	tar -zcvf pack.tgz pack
+	cd pack && tar -zcvf ../pack.tgz *
 
 .PHONY: clean
 clean:
+	rm -f pack.tgz
 	rm -rf pack
