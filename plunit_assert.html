@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>API Documentation for plunit_assert</title>
+
+<link rel="stylesheet" type="text/css" href="pldoc.css">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+</head>
+<body>
+
+
+<h1 class="file"><span style="float:right"></span>plunit_assert.pl -- The test API for plunit_assert</h1>
+
+<p>
+A unit testing library for Prolog, providing an expressive xUnit-like API for PlUnit.</p>
+
+<dl class="tags">
+<dt class="keyword-author">author</dt><dd class="keyword-author">- Simon Harding &lt;github@pointbeing.net&gt;</dd>
+<dt class="keyword-license">license</dt><dd class="keyword-license">- MIT</dd>
+</dl>
+
+<dl>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_true/1"><b class="pred">assert_true</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Goal</var> succeeds and therefore is truthy
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Goal</var></td><td class="argdescr">- The goal to be tested</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_false/1"><b class="pred">assert_false</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Goal</var> fails and therefore is falsy
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Goal</var></td><td class="argdescr">- The goal to be tested</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_equals/2"><b class="pred">assert_equals</b><var class="arglist">(+A, +B)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">This is a superset of <a href="plunit_assert.html#assert_is/2">assert_is/2</a> and arithmetic comparison with =:=
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>A</var></td><td class="argdescr">- The first of the terms to be compared</td></tr>
+<tr><td><var>B</var></td><td class="argdescr">- The second of the terms to be compared</td></tr>
+</table>
+
+</dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_not_equals/2"><b class="pred">assert_not_equals</b><var class="arglist">(+A, +B)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>A</var> and <var>B</var> are not equal terms
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>A</var></td><td class="argdescr">- The first of the terms to be compared</td></tr>
+<tr><td><var>B</var></td><td class="argdescr">- The second of the terms to be compared</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a href="plunit_assert.html#assert_equals/2">assert_equals/2</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_is/2"><b class="pred">assert_is</b><var class="arglist">(+A, +B)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>A</var> and <var>B</var> are identical terms
+
+<p>
+Uses <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=%3D%3D/2">==/2</a> to check for term identity, which means it compares the terms <var>A</var> and
+<var>B</var> structurally, including the functor and arity (number of arguments) of the
+terms and the equality of each corresponding argument. Thus, succeeds if <var>A</var>
+and <var>B</var> are identical terms, without attempting to unify variables or perform
+any arithmetic evaluations</p>
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>A</var></td><td class="argdescr">- The first of the terms to be compared</td></tr>
+<tr><td><var>B</var></td><td class="argdescr">- The second of the terms to be compared</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a></dd><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=%3D%3D/2">==/2</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_is_not/2"><b class="pred">assert_is_not</b><var class="arglist">(+A, +B)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>A</var> and <var>B</var> are not identical terms
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>A</var></td><td class="argdescr">- The first of the terms to be compared</td></tr>
+<tr><td><var>B</var></td><td class="argdescr">- The second of the terms to be compared</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a href="plunit_assert.html#assert_is/2">assert_is/2</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_exception/1"><b class="pred">assert_exception</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that an exception is thrown during the invocation of <var>Goal</var>
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Goal</var></td><td class="argdescr">- The goal to be tested</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_unbound/1"><b class="pred">assert_unbound</b><var class="arglist">(+Var)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Var</var> is unbound
+
+<p>
+This is analogous to <code>isNull()</code> or <code>isNone()</code> in other xUnit implementations</p>
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Var</var></td><td class="argdescr">- The variable to be tested for boundness</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_not_unbound/1"><b class="pred">assert_not_unbound</b><var class="arglist">(+Var)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Var</var> is not unbound
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Var</var></td><td class="argdescr">- The variable to be tested for unboundness</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a href="plunit_assert.html#assert_unbound/1">assert_unbound/1</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_in/2"><b class="pred">assert_in</b><var class="arglist">(+Var, +Collection)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Var</var> is in <var>Collection</var>
+
+<p>
+This checks for list/set membership, and also whether <var>Var</var> is a valid
+dictionary key in <var>Collection</var></p>
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Var</var></td><td class="argdescr">- The needle</td></tr>
+<tr><td><var>Collection</var></td><td class="argdescr">- The haystack</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_not_in/2"><b class="pred">assert_not_in</b><var class="arglist">(+Var, +Collection)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Var</var> is not in <var>Collection</var>
+
+<p>
+This checks for list/set membership, and also whether <var>Var</var> is a valid
+dictionary key in <var>Collection</var></p>
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Var</var></td><td class="argdescr">- The needle</td></tr>
+<tr><td><var>Collection</var></td><td class="argdescr">- The haystack</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a href="plunit_assert.html#assert_in/2">assert_in/2</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_type/2"><b class="pred">assert_type</b><var class="arglist">(+Term, +Type)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that Var is of type <var>Type</var>
+
+<p>
+Supported types are: number, integer, float, atom, compound, list, dict</p>
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Term</var></td><td class="argdescr">- The term to be tested</td></tr>
+<tr><td><var>Type</var></td><td class="argdescr">- The type to be asserted</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a></dd>
+<dt class="keyword-tbd">To be done</dt><dd class="keyword-tbd">- Compound types</dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_not_type/2"><b class="pred">assert_not_type</b><var class="arglist">(+Term, +Type)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that Var is not of type <var>Type</var>
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Term</var></td><td class="argdescr">- The term to be tested</td></tr>
+<tr><td><var>Type</var></td><td class="argdescr">- The type to be un-asserted</td></tr>
+</table>
+
+</dd>
+<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a href="plunit_assert.html#assert_type/2">assert_type/2</a></dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_fails/1"><b class="pred">assert_test_fails</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check that <var>Goal</var> would trigger a PlUnit test fail
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Goal</var></td><td class="argdescr">- The goal to be queried in the form of a plunit_assert predicate</td></tr>
+</table>
+
+</dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_passes/1"><b class="pred">assert_test_passes</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check that <var>Goal</var> would not trigger a PlUnit test fail
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Goal</var></td><td class="argdescr">- The goal to be queried in the form of a plunit_assert predicate</td></tr>
+</table>
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</body>
+</html>
