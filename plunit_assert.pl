@@ -1,6 +1,10 @@
 :- module(plunit_assert, [
     assert_equals/2,
     assert_not_equals/2,
+    assert_gt/2,
+    % assert_gte/2,
+    assert_lt/2,
+    % assert_lte/2,
     assert_is/2,
     assert_is_not/2,
     assert_exception/1,
@@ -190,6 +194,24 @@ assert_not_type(Term, atom) :- assertion(\+ atom(Term)).
 assert_not_type(Term, compound) :- assertion(\+ compound(Term)).
 assert_not_type(Term, list) :- assertion(\+ is_list(Term)).
 assert_not_type(Term, dict) :- assertion(\+ is_dict(Term)).
+
+%! assert_gt(+A, +B) is semidet
+%
+% Test that A is greater than B
+%
+% @arg A
+% @arg B
+assert_gt(A, B) :-
+    assertion(A > B).
+
+%! assert_lt(+A, +B) is semidet
+%
+% Test that A is less than B
+%
+% @arg A
+% @arg B
+assert_lt(A, B) :-
+    assertion(A < B).
 
 
 % meta-tests ------------------------------------------------------------------

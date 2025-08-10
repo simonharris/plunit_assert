@@ -92,7 +92,6 @@ test(pa_in) :-
     assert_test_fails(assert_in(4, Sortedset)),
     !.
 
-
 test(pa_not_in) :-
     % not in list
     assert_not_in(7, [1, 2, 3]),
@@ -106,7 +105,6 @@ test(pa_not_in) :-
     assert_not_in(7, Sortedset),
     assert_test_fails(assert_not_in(3, Sortedset)),
     !.
-
 
 test(pa_is_number) :-
     assert_test_passes(assert_type(3, number)),
@@ -165,11 +163,21 @@ test(pa_not_type) :-
     % etc
     !.
 
-
-
-% Compound terms: These are terms with a functor and a fixed number of arguments,
-% like point(X, Y) or tree(Node, Left, Right).
-
-
+test(pa_gt) :-
+    assert_test_passes(assert_gt(9, 3)),
+    assert_test_passes(assert_gt(9, 1+2)),
+    assert_test_passes(assert_gt(9, 3.0)),
+    assert_test_fails(assert_gt(9, 9)),
+    assert_test_fails(assert_gt(3, 9.2)),
+    assert_test_fails(assert_gt(3, 8)),
+    !.
+test(pa_lt) :-
+    assert_test_fails(assert_lt(9, 3)),
+    assert_test_fails(assert_lt(9, 1+2)),
+    assert_test_fails(assert_lt(9, 3.0)),
+    assert_test_fails(assert_lt(9, 9)),
+    assert_test_passes(assert_lt(3, 9.2)),
+    assert_test_passes(assert_lt(3, 8)),
+    !.
 
 :- end_tests(pa1).
