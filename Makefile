@@ -15,12 +15,12 @@ docs:
 .PHONY: pack
 pack: clean
 	# remember to bump version number
-	mkdir -p pack/prolog
-	cp plunit_assert.pl pack/prolog/
-	cp pack.pl.dist pack/pack.pl
-	cd pack && tar -zcvf ../pack.tgz *
+	mkdir -p plunit_assert/prolog
+	cp plunit_assert.pl plunit_assert/prolog/
+	cp pack.pl.dist plunit_assert/pack.pl
+	COPYFILE_DISABLE=1 tar --format=ustar --exclude='._*' -czf plunit_assert-0.1.0.tgz plunit_assert
 
 .PHONY: clean
 clean:
 	rm -f pack.tgz
-	rm -rf pack
+	rm -rf plunit_assert

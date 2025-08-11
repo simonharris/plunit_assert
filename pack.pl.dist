@@ -1,7 +1,7 @@
 name(plunit_assert).
 title('plunit_assert').
-version('0.1-beta').
+version('0.1.0').
 author('Simon Harding', 'github@pointbeing.net').
 description('A unit testing library for Prolog, providing an expressive xUnit-like API for PlUnit.').
-keywords([plunit, testing, assert, assertion, unit testing, xunit]).
+keywords([plunit, testing, assert, assertion, 'unit testing', xunit]).
 home('https://simonharris.github.io/plunit_assert/').
