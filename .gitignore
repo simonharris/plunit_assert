@@ -1,4 +1,5 @@
 docs/*.html
 docs/*.css
 docs/*.png
-pack/
+plunit_assert*.tgz
+plunit_assert/
