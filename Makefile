@@ -1,6 +1,8 @@
 .PHONY: test
 test:
-	@swipl -g "load_files([tests/test_pa]), run_tests" -t halt
+	@swipl -g "load_files([tests/test_pa]), \
+		coverage(run_tests, [files([prolog/plunit_assert.pl])])" -t halt
+
 
 .PHONY: docserver
 docserver:
@@ -22,5 +24,5 @@ pack: clean
 
 .PHONY: clean
 clean:
-	rm -f pack.tgz
-	rm -rf plunit_assert
+	rm -f plunit_assert*.tgz
+	rm -rf plunit_assert/
