@@ -260,29 +260,29 @@ assert_output(Goal, Vars, Expected) :-
 % meta-tests ------------------------------------------------------------------
 
 
-%! assert_test_fails(+Goal) is semidet
+%! assert_test_fails(:Goal) is semidet
 %
 % Meta test to check that Goal would trigger a PlUnit test fail
 %
 % @arg Goal The goal to be queried in the form of a plunit_assert predicate
 assert_test_fails(Goal) :-
     setup_call_cleanup(
-        asserta((prolog:assertion_failed(Reason, Somegoal) :-
-                    pa_assertion_failed(Reason, Somegoal),
-                    nb_setval(assertion_failed, true)),
+        (asserta((prolog:assertion_failed(Reason, Somegoal) :-
+                    pa_assertion_failed(Reason, Somegoal)),
                 Ref),
-        (nb_setval(assertion_failed, false),
-         catch(Goal, _, true),
-         nb_getval(assertion_failed, Failed)),
+         nb_setval(assertion_failed, false)
+        ),
+        (catch(Goal, _, true),
+         nb_getval(assertion_failed, Failed)
+         ),
         erase(Ref)
     ),
     Failed == true.
 
 pa_assertion_failed(_, _) :-
-    %writeln('Captured test fail'),
-    !.
+    nb_setval(assertion_failed, true).
 
-%! assert_test_passes(+Goal) is semidet
+%! assert_test_passes(:Goal) is semidet
 %
 % Meta test to check that Goal would not trigger a PlUnit test fail
 %
