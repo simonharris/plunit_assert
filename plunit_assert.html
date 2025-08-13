@@ -21,7 +21,7 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 </dl>
 
 <dl>
-<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_true/1"><b class="pred">assert_true</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Goal</var> succeeds and therefore is truthy
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_true/1"><b class="pred">assert_true</b><var class="arglist">(:Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Goal</var> succeeds and therefore is truthy
 
 <dl class="tags">
 <dt class="tag">Arguments:</dt><dd>
@@ -35,7 +35,7 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 </dl>
 
 </dd>
-<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_false/1"><b class="pred">assert_false</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Goal</var> fails and therefore is falsy
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_false/1"><b class="pred">assert_false</b><var class="arglist">(:Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that <var>Goal</var> fails and therefore is falsy
 
 <dl class="tags">
 <dt class="tag">Arguments:</dt><dd>
@@ -115,7 +115,7 @@ any arithmetic evaluations</p>
 </dl>
 
 </dd>
-<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_exception/1"><b class="pred">assert_exception</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that an exception is thrown during the invocation of <var>Goal</var>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_exception/1"><b class="pred">assert_exception</b><var class="arglist">(:Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that an exception is thrown during the invocation of <var>Goal</var>
 
 <dl class="tags">
 <dt class="tag">Arguments:</dt><dd>
@@ -282,6 +282,21 @@ Supported types are: number, integer, float, atom, compound, list, dict</p>
 <table class="arglist">
 <tr><td><var>A</var></td><td class="argdescr">- </td></tr>
 <tr><td><var>B</var></td><td class="argdescr">- </td></tr>
+</table>
+
+</dd>
+</dl>
+
+</dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_output/3"><b class="pred">assert_output</b><var class="arglist">(:Goal, +Vars:list, +Expected:list)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that a predicate's output arguments match what is expected
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Goal</var></td><td class="argdescr">- The predicate to be invoked</td></tr>
+<tr><td><var>Vars</var></td><td class="argdescr">- The list of vars to be inspected</td></tr>
+<tr><td><var>Expected</var></td><td class="argdescr">- The expected values for <var>Vars</var></td></tr>
 </table>
 
 </dd>
