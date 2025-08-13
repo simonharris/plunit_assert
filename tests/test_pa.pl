@@ -199,4 +199,12 @@ test(pa_lte) :-
     assert_test_passes(assert_lte(3, 8)),
     !.
 
+test(pa_output) :-
+    assert_test_passes(assert_output(plus(1, 2, Sum), [Sum], [3])),
+    assert_test_passes(assert_output(plus(1, What, 3), [What], [2])),
+    assert_test_fails(assert_output(plus(1, 2, Sum), [Sum], [4])),
+    assert_test_passes(assert_output(divmod(19, 4, Quotient, Remainder), [Quotient, Remainder], [4, 3])),
+    assert_test_fails(assert_output(divmod(19, 4, Quotient, Remainder), [Quotient, Remainder], [14, 3])),
+    !.
+
 :- end_tests(pa1).

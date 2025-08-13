@@ -16,6 +16,7 @@
     assert_not_in/2,
     assert_type/2,
     assert_not_type/2,
+    assert_output/3,
     % Meta stuff - not really part of the plunit_assert API
     assert_test_fails/1,
     assert_test_passes/1
@@ -30,7 +31,7 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 :- dynamic prolog:assertion_failed/2.
 
 
-%! assert_true(+Goal) is semidet
+%! assert_true(:Goal) is semidet
 %
 % Test that Goal succeeds and therefore is truthy
 %
@@ -39,7 +40,7 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 assert_true(Goal) :-
     assertion(Goal).
 
-%! assert_false(+Goal) is semidet
+%! assert_false(:Goal) is semidet
 %
 % Test that Goal fails and therefore is falsy
 %
@@ -94,7 +95,7 @@ assert_is(A, B) :-
 assert_is_not(A, B) :-
     assertion(A \== B).
 
-%! assert_exception(+Goal) is semidet
+%! assert_exception(:Goal) is semidet
 %
 % Test that an exception is thrown during the invocation of Goal
 %
@@ -231,6 +232,30 @@ assert_gte(A, B) :-
 assert_lte(A, B) :-
     assertion(A =< B).
 
+%! assert_output(:Goal, +Vars:list, +Expected:list) is semidet
+%
+% Test that a predicate's output arguments match what is expected
+%
+% @arg Goal The predicate to be invoked
+% @arg Vars The list of vars to be inspected
+% @arg Expected The expected values for Vars
+assert_output(Goal, Vars, Expected) :-
+    must_be(list, Vars),
+    must_be(list, Expected),
+    same_length(Vars, Expected),
+    once(call(Goal)),  % actually run the predicate
+    assertion(Vars == Expected).
+    % compare_vars(Vars, Expected).
+
+% TODO: report on individual vars
+% compare_vars([], []) :- !.
+% compare_vars([V|Vs], [E|Es]) :-
+%     (   V == E
+%     ->  true
+%     ;   throw(error(pa_assertion_failed(V, E), _))
+%     ),
+%     compare_vars(Vs, Es).
+
 
 % meta-tests ------------------------------------------------------------------
 
@@ -253,6 +278,10 @@ assert_test_fails(Goal) :-
     ),
     Failed == true.
 
+pa_assertion_failed(_, _) :-
+    %writeln('Captured test fail'),
+    !.
+
 %! assert_test_passes(+Goal) is semidet
 %
 % Meta test to check that Goal would not trigger a PlUnit test fail
@@ -261,6 +290,4 @@ assert_test_fails(Goal) :-
 assert_test_passes(Goal) :-
     Goal.
 
-pa_assertion_failed(_, _) :-
-    %writeln('Captured test fail'),
-    !.
+
