@@ -1,5 +1,9 @@
 .PHONY: test
 test:
+	@swipl -g "load_files([tests/test_pa]), run_tests" -t halt
+
+.PHONY: testc
+testc:
 	@swipl -g "load_files([tests/test_pa]), \
 		coverage(run_tests, [files([prolog/plunit_assert.pl])])" -t halt
 
