@@ -29,7 +29,7 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 @license MIT
 */
 :- dynamic prolog:assertion_failed/2.
-
+:- multifile prolog:assertion_failed/2.
 
 %! assert_true(:Goal) is semidet
 %
@@ -37,8 +37,67 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 %
 % @arg Goal The goal to be tested
 % @see assertion/1
-assert_true(Goal) :-
-    assertion(Goal).
+% assert_true(Goal) :-
+%     assertion(Goal).
+
+
+% chatgpt orig
+% assert_true(Cond) :-
+%     setup_call_cleanup(
+%         asserta(
+%             (prolog:assertion_failed(Reason, Goal) :-
+%                 format(user_error, '[plunit_assert] Assertion failed: ~w~n', [Reason]),
+%                 format(user_error, '    in goal: ~q~n', [Goal]),
+%                 fail    % let PlUnit continue to treat it as a failure
+%             ),
+%             Ref
+%         ),
+%         assertion(Cond),
+%         erase(Ref)
+%     ).
+
+
+
+assert_true(Cond) :-
+    setup_call_cleanup(
+        (asserta((prolog:assertion_failed(Reason, Somegoal) :-
+                    at_assertion_failed(Reason, Somegoal)),
+                Ref),
+         nb_setval(at_assertion_failed, false)
+        ),
+        (catch(assertion(Cond), _, true),
+         nb_getval(at_assertion_failed, Failed)
+         ),
+        erase(Ref)
+    ),
+    Failed == false.
+
+at_assertion_failed(Reason, Goal) :-
+    format(user_error, '[plunit_assert] Assertion failed: ~w~n', [Reason]),
+    format(user_error, '[plunit_assert] in goal: ~q', [Goal]),
+    nb_setval(at_assertion_failed, true).
+
+
+% assert_true(Cond) :-
+%     setup_call_cleanup(
+%         (asserta((prolog:assertion_failed(Reason, Somegoal) :-
+%                     at_assertion_failed(Reason, Somegoal)),
+%                 Ref),
+%          nb_setval(at_assertion_failed_val, false)
+%         ),
+%         (catch(assertion(Cond), _, true),
+%          nb_getval(at_assertion_failed_val, Failed)
+%          ),
+%         erase(Ref)
+%     ),
+%     Failed == true.
+
+at_assertion_failed(Reason, Goal) :-
+    format(user_error, '[plunit_assert] Assertion failed: ~w~n', [Reason]),
+    format(user_error, '    in goal: ~q~n', [Goal]),
+    %fail    % let PlUnit continue to treat it as a failure
+    nb_setval(at_assertion_failed_val, true).
+
 
 %! assert_false(:Goal) is semidet
 %

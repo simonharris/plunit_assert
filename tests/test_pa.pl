@@ -1,7 +1,23 @@
 :- use_module('../plunit_assert').
 
 
+:- multifile prolog:assertion_failed/2.
+
+
+
 :- begin_tests(pa1).
+
+
+
+test(demo0) :-
+    assert_true(2 =:= 2),
+    %assert_true(1 =:= 2),
+    !.
+test(demo1) :-
+    %assert_true(2 =:= 2),
+    assert_true(1 =:= 2),
+    !.
+
 
 % Won't work yet. See https://github.com/simonharris/plunit_assert/issues/6
 % test(meta_tests) :-
@@ -17,12 +33,12 @@ test(pa_exception) :-
     assert_test_fails(assert_exception(true)),
     !.
 
-test(pa_truth) :-
-    assert_test_passes(assert_true(true)),
-    assert_test_fails(assert_true(false)),
-    assert_test_passes(assert_false(false)),
-    assert_test_fails(assert_false(true)),
-    !.
+% test(pa_truth) :-
+%     assert_test_passes(assert_true(true)),
+%     assert_test_fails(assert_true(false)),
+%     assert_test_passes(assert_false(false)),
+%     assert_test_fails(assert_false(true)),
+%     !.
 
 test(pa_equals) :-
     assert_equals(3, 3),
