@@ -9,14 +9,15 @@
 
 
 
-test(demo0) :-
-    assert_true(2 =:= 2),
-    %assert_true(1 =:= 2),
-    !.
-test(demo1) :-
-    %assert_true(2 =:= 2),
-    assert_true(1 =:= 2),
-    !.
+% test(demo0) :-
+%     assert_true(2 =:= 2).
+% test(demo1) :-
+%     assert_true(1 =:= 2).
+test(demo2) :-
+    assert_test_fails(assert_true(1 =:= 2)).
+test(demo3) :-
+    assert_test_fails(assert_true(1 =:= 1)).
+    %assert_test_fails(assert_test_fails(assert_true(1 =:= 1))).
 
 
 % Won't work yet. See https://github.com/simonharris/plunit_assert/issues/6
@@ -27,6 +28,7 @@ test(demo1) :-
 %     assert_test_fails(assert_test_fails(assert_true(true))),
 %     !.
 
+/*
 test(pa_exception) :-
     assert_exception(throw(pa_exception)),
     assert_test_passes(assert_exception(throw(pa_exception))),
@@ -222,5 +224,6 @@ test(pa_output) :-
     assert_test_passes(assert_output(divmod(19, 4, Quotient, Remainder), [Quotient, Remainder], [4, 3])),
     assert_test_fails(assert_output(divmod(19, 4, Quotient, Remainder), [Quotient, Remainder], [14, 3])),
     !.
+    */
 
 :- end_tests(pa1).

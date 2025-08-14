@@ -63,10 +63,10 @@ assert_true(Cond) :-
         (asserta((prolog:assertion_failed(Reason, Somegoal) :-
                     at_assertion_failed(Reason, Somegoal)),
                 Ref),
-         nb_setval(at_assertion_failed, false)
+         nb_setval(at_assertion_failed_val, false)
         ),
         (catch(assertion(Cond), _, true),
-         nb_getval(at_assertion_failed, Failed)
+         nb_getval(at_assertion_failed_val, Failed)
          ),
         erase(Ref)
     ),
@@ -75,7 +75,7 @@ assert_true(Cond) :-
 at_assertion_failed(Reason, Goal) :-
     format(user_error, '[plunit_assert] Assertion failed: ~w~n', [Reason]),
     format(user_error, '[plunit_assert] in goal: ~q', [Goal]),
-    nb_setval(at_assertion_failed, true).
+    nb_setval(at_assertion_failed_val, true).
 
 
 % assert_true(Cond) :-
@@ -325,18 +325,25 @@ assert_output(Goal, Vars, Expected) :-
 %
 % @arg Goal The goal to be queried in the form of a plunit_assert predicate
 assert_test_fails(Goal) :-
-    setup_call_cleanup(
-        (asserta((prolog:assertion_failed(Reason, Somegoal) :-
-                    pa_assertion_failed(Reason, Somegoal)),
-                Ref),
-         nb_setval(assertion_failed, false)
-        ),
-        (catch(Goal, _, true),
-         nb_getval(assertion_failed, Failed)
-         ),
-        erase(Ref)
-    ),
-    Failed == true.
+    (   Goal
+    ->  format('[assert_test_fails] Expected failure but succeeded: ~q~n', [Goal]),
+        fail
+    ;   true
+    ).
+
+% assert_test_fails(Goal) :-
+%     setup_call_cleanup(
+%         (asserta((prolog:assertion_failed(Reason, Somegoal) :-
+%                     pa_assertion_failed(Reason, Somegoal)),
+%                 Ref),
+%          nb_setval(assertion_failed, false)
+%         ),
+%         (catch(Goal, _, true),
+%          nb_getval(assertion_failed, Failed)
+%          ),
+%         erase(Ref)
+%     ),
+%     Failed == true.
 
 pa_assertion_failed(_, _) :-
     nb_setval(assertion_failed, true).
