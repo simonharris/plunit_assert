@@ -60,8 +60,8 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 
 assert_true(Cond) :-
     setup_call_cleanup(
-        (asserta((prolog:assertion_failed(Reason, Somegoal) :-
-                    at_assertion_failed(Reason, Somegoal)),
+        (asserta((prolog:assertion_failed(_, _) :-
+                    pa_assert_true_failure(Cond)),
                 Ref),
          nb_setval(at_assertion_failed_val, false)
         ),
@@ -72,9 +72,29 @@ assert_true(Cond) :-
     ),
     Failed == false.
 
-at_assertion_failed(Reason, Goal) :-
-    format(user_error, '[plunit_assert] Assertion failed: ~w~n', [Reason]),
-    format(user_error, '[plunit_assert] in goal: ~q', [Goal]),
+pa_assert_true_failure(Goal) :-
+    %format(user_error, '[plunit_assert] Assertion failed with reason: ~w~n', [Reason]),
+    format(user_error, '[plunit_assert] Asserted true but got false for: ~q', [Goal]),
+    nb_setval(at_assertion_failed_val, true).
+
+% TODO: this works, but the logic is inside out. I think
+assert_false(Cond) :-
+    setup_call_cleanup(
+        (asserta((prolog:assertion_failed(_, _) :-
+                    pa_assert_false_failure(Cond)),
+                Ref),
+         nb_setval(at_assertion_failed_val, false)
+        ),
+        (catch(assertion(\+ Cond), _, true),
+         nb_getval(at_assertion_failed_val, Failed)
+         ),
+        erase(Ref)
+    ),
+    Failed == false.
+
+pa_assert_false_failure(Goal) :-
+    %format(user_error, '[plunit_assert] Assertion failed with reason: ~w~n', [Reason]),
+    format(user_error, '[plunit_assert] Asserted false but got true for: ~q', [Goal]),
     nb_setval(at_assertion_failed_val, true).
 
 
@@ -92,12 +112,6 @@ at_assertion_failed(Reason, Goal) :-
 %     ),
 %     Failed == true.
 
-at_assertion_failed(Reason, Goal) :-
-    format(user_error, '[plunit_assert] Assertion failed: ~w~n', [Reason]),
-    format(user_error, '    in goal: ~q~n', [Goal]),
-    %fail    % let PlUnit continue to treat it as a failure
-    nb_setval(at_assertion_failed_val, true).
-
 
 %! assert_false(:Goal) is semidet
 %
@@ -105,8 +119,8 @@ at_assertion_failed(Reason, Goal) :-
 %
 % @arg Goal The goal to be tested
 % @see assertion/1
-assert_false(Goal) :-
-    assertion(\+ Goal).
+% assert_false(Goal) :-
+%     assertion(\+ Goal).
 
 %! assert_equals(+A, +B) is semidet
 %

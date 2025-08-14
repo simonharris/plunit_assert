@@ -11,37 +11,37 @@
 
 % test(demo0) :-
 %     assert_true(2 =:= 2).
-% test(demo1) :-
-%     assert_true(1 =:= 2).
-test(demo2) :-
-    assert_test_fails(assert_true(1 =:= 2)).
+test(demo1) :-
+    assert_true(1 =:= 2).
+% test(demo2) :-
+%     assert_test_fails(assert_true(1 =:= 2)).
 test(demo3) :-
-    assert_test_fails(assert_true(1 =:= 1)).
-    %assert_test_fails(assert_test_fails(assert_true(1 =:= 1))).
+    assert_false(2 =:= 2).
+
+test(meta_tests) :-
+    assert_test_passes(assert_test_fails(assert_true(false))),
+    assert_test_fails(assert_test_passes(assert_true(false))),
+    assert_test_passes(assert_test_passes(assert_true(true))),
+    assert_test_fails(assert_test_fails(assert_true(true))),
+    !.
 
 
-% Won't work yet. See https://github.com/simonharris/plunit_assert/issues/6
-% test(meta_tests) :-
-%     assert_test_passes(assert_test_fails(assert_true(false))),
-%     assert_test_fails(assert_test_passes(assert_true(false))),
-%     assert_test_passes(assert_test_passes(assert_true(true))),
-%     assert_test_fails(assert_test_fails(assert_true(true))),
-%     !.
-
-/*
 test(pa_exception) :-
     assert_exception(throw(pa_exception)),
     assert_test_passes(assert_exception(throw(pa_exception))),
-    assert_test_fails(assert_exception(true)),
+    % TODO assert_test_fails(assert_exception(true)),
     !.
 
-% test(pa_truth) :-
-%     assert_test_passes(assert_true(true)),
-%     assert_test_fails(assert_true(false)),
-%     assert_test_passes(assert_false(false)),
-%     assert_test_fails(assert_false(true)),
-%     !.
+test(pa_truth) :-
+     assert_test_passes(assert_true(true)),
+     assert_test_fails(assert_true(false)),
+     assert_test_passes(assert_false(false)),
+     assert_test_fails(assert_false(true)),
+    !.
 
+/*
+
+% TODO: hook this up to wrap the assertion
 test(pa_equals) :-
     assert_equals(3, 3),
     assert_equals(dog, dog),
