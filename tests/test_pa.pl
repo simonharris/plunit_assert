@@ -18,8 +18,9 @@ test(pa_truth) :-
     !.
 
 test(pa_equals) :-
-    assert_equals(3, 3),
-    assert_equals(dog, dog),
+    assert_test_passes(assert_equals(3, 3)),
+    assert_test_passes(assert_equals(dog, dog)),
+    assert_test_passes(assert_equals(14, 7*2)),
     assert_test_fails(assert_equals(7, 6)),
     assert_test_fails(assert_equals(dog, cat)),
    !.
@@ -30,7 +31,7 @@ test(pa_not_equals) :- assert_test_passes(assert_not_equals(3, 4)).
 test(pa_not_equals) :- assert_test_passes(assert_not_equals(dog, cat)).
 test(pa_not_equals) :- assert_test_fails(assert_not_equals(7, 7)).
 test(pa_not_equals) :- assert_test_fails(assert_not_equals(dog, dog)).
-% TODO See #21 test(pa_not_equals) :- assert_test_fails(assert_not_equals(9, 6+3)).
+test(pa_not_equals_bug_21) :- assert_test_fails(assert_not_equals(9, 6+3)).
 
 test(pa_identity) :-
     assert_is(foo(cat, 3), foo(cat, 3)),

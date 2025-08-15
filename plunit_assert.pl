@@ -76,7 +76,17 @@ fail_assert_equals(A, B) :-
 % @arg B The second of the terms to be compared
 % @see assert_equals/2
 assert_not_equals(A, B) :-
-    call_protected(A \= B, fail_assert_not_equals(A, B)).
+    call_protected(\+ equal_after_eval(A, B),
+                   fail_assert_not_equals(A, B)).
+
+% this differs somewhat from assert_equals/2 at the moment, but this general
+% approach may be more suitable once we start comparing compound terms etc
+equal_after_eval(A, B) :-
+    catch(ValA is A, _, fail),
+    catch(ValB is B, _, fail),
+    ValA =:= ValB, !.
+equal_after_eval(A, B) :-
+    A == B.
 
 fail_assert_not_equals(A, B) :-
     feedback('Asserted ~q and ~q are not equal, but they are', [A, B]).
@@ -278,7 +288,8 @@ fail_assert_lte(A, B) :-
 assert_output(Goal, Vars, Expected) :-
     call(Goal),
     find_values(Vars, Actual),
-    call_protected(Actual == Expected, fail_assert_output(Expected, Actual)).
+    call_protected(Actual == Expected, fail_assert_output(Expected, Actual)),
+    !.
 
 find_values([], []).
 find_values([V|Vs], [Val|Vals]) :-
@@ -313,8 +324,7 @@ term_type(Term, Type) :-
 
 feedback(Format, Args) :-
     format(atom(Atom), Format, Args),
-    format(user_error, '[plunit_assert] ~s', [Atom]),
-    nl(user_error).
+    format(user_error, '[plunit_assert] ~s', [Atom]).
 
 call_protected(Cond, Callback) :-
     setup_call_cleanup(
@@ -342,7 +352,7 @@ call_protected(Cond, Callback) :-
 % @arg Goal The goal to be queried in the form of a plunit_assert predicate
 assert_test_fails(Goal) :-
     (   Goal
-    ->  format('[assert_test_fails] Expected failure but succeeded: ~q~n', [Goal]),
+    ->  feedback('Asserted test failure but test passed: ~q', [Goal]),
         fail
     ;   true
     ).
