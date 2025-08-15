@@ -13,7 +13,8 @@
 <h1 class="file"><span style="float:right"></span>plunit_assert.pl -- The test API for plunit_assert</h1>
 
 <p>
-A unit testing library for Prolog, providing an expressive xUnit-like API for PlUnit.</p>
+A unit testing library for Prolog, providing an expressive xUnit-like API for
+PlUnit, and better feedback to the user on test fail.</p>
 
 <dl class="tags">
 <dt class="keyword-author">author</dt><dd class="keyword-author">- Simon Harding &lt;github@pointbeing.net&gt;</dd>
@@ -56,7 +57,9 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 
 <table class="arglist">
 <tr><td><var>A</var></td><td class="argdescr">- The first of the terms to be compared</td></tr>
-<tr><td><var>B</var></td><td class="argdescr">- The second of the terms to be compared</td></tr>
+<tr><td><var>B</var></td><td class="argdescr">- The second of the terms to be compared
+<code>assert_equals(A, B)</code> :-
+<code>assertion(A == B; A =:= B)</code>.</td></tr>
 </table>
 
 </dd>
@@ -112,20 +115,6 @@ any arithmetic evaluations</p>
 
 </dd>
 <dt class="keyword-see">See also</dt><dd class="keyword-see">- <a href="plunit_assert.html#assert_is/2">assert_is/2</a></dd>
-</dl>
-
-</dd>
-<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_exception/1"><b class="pred">assert_exception</b><var class="arglist">(:Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Test that an exception is thrown during the invocation of <var>Goal</var>
-
-<dl class="tags">
-<dt class="tag">Arguments:</dt><dd>
-
-<table class="arglist">
-<tr><td><var>Goal</var></td><td class="argdescr">- The goal to be tested</td></tr>
-</table>
-
-</dd>
-<dt class="keyword-see">See also</dt><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a></dd>
 </dl>
 
 </dd>
@@ -213,7 +202,7 @@ Supported types are: number, integer, float, atom, compound, list, dict</p>
 
 </dd>
 <dt class="keyword-see">See also</dt><dd class="keyword-see">- <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a></dd>
-<dt class="keyword-tbd">To be done</dt><dd class="keyword-tbd">- Compound types</dd>
+<dt class="keyword-tbd">To be done</dt><dd class="keyword-tbd">- Compound types</dd><dd class="keyword-tbd">- Consider <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=must_be/2">must_be/2</a> or similar</dd>
 </dl>
 
 </dd>
@@ -295,7 +284,7 @@ Supported types are: number, integer, float, atom, compound, list, dict</p>
 
 <table class="arglist">
 <tr><td><var>Goal</var></td><td class="argdescr">- The predicate to be invoked</td></tr>
-<tr><td><var>Vars</var></td><td class="argdescr">- The list of vars to be inspected</td></tr>
+<tr><td><var>Got</var></td><td class="argdescr">- The list of vars to be inspected</td></tr>
 <tr><td><var>Expected</var></td><td class="argdescr">- The expected values for <var>Vars</var></td></tr>
 </table>
 
@@ -303,7 +292,7 @@ Supported types are: number, integer, float, atom, compound, list, dict</p>
 </dl>
 
 </dd>
-<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_fails/1"><b class="pred">assert_test_fails</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check that <var>Goal</var> would trigger a PlUnit test fail
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_fails/1"><b class="pred">assert_test_fails</b><var class="arglist">(:Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check that <var>Goal</var> would trigger a PlUnit test fail
 
 <dl class="tags">
 <dt class="tag">Arguments:</dt><dd>
@@ -316,7 +305,7 @@ Supported types are: number, integer, float, atom, compound, list, dict</p>
 </dl>
 
 </dd>
-<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_passes/1"><b class="pred">assert_test_passes</b><var class="arglist">(+Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check that <var>Goal</var> would not trigger a PlUnit test fail
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_passes/1"><b class="pred">assert_test_passes</b><var class="arglist">(:Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check that <var>Goal</var> would not trigger a PlUnit test fail
 
 <dl class="tags">
 <dt class="tag">Arguments:</dt><dd>
