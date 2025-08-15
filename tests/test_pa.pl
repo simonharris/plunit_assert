@@ -1,35 +1,13 @@
 :- use_module('../plunit_assert').
-
-
 :- multifile prolog:assertion_failed/2.
 
-
-
 :- begin_tests(pa1).
-
-
-
-% test(demo0) :-
-%     assert_true(2 =:= 2).
-test(demo1) :-
-    assert_true(1 =:= 2).
-% test(demo2) :-
-%     assert_test_fails(assert_true(1 =:= 2)).
-test(demo3) :-
-    assert_false(2 =:= 2).
 
 test(meta_tests) :-
     assert_test_passes(assert_test_fails(assert_true(false))),
     assert_test_fails(assert_test_passes(assert_true(false))),
     assert_test_passes(assert_test_passes(assert_true(true))),
     assert_test_fails(assert_test_fails(assert_true(true))),
-    !.
-
-
-test(pa_exception) :-
-    assert_exception(throw(pa_exception)),
-    assert_test_passes(assert_exception(throw(pa_exception))),
-    % TODO assert_test_fails(assert_exception(true)),
     !.
 
 test(pa_truth) :-
@@ -39,9 +17,6 @@ test(pa_truth) :-
      assert_test_fails(assert_false(true)),
     !.
 
-/*
-
-% TODO: hook this up to wrap the assertion
 test(pa_equals) :-
     assert_equals(3, 3),
     assert_equals(dog, dog),
@@ -49,14 +24,13 @@ test(pa_equals) :-
     assert_test_fails(assert_equals(dog, cat)),
    !.
 
-test(pa_not_equals) :-
-    assert_not_equals(3, 4),
-    assert_not_equals(dog, cat),
-    assert_test_passes(assert_not_equals(3, 4)),
-    assert_test_passes(assert_not_equals(dog, cat)),
-    assert_test_fails(assert_not_equals(7, 7)),
-    assert_test_fails(assert_not_equals(dog, dog)),
-    !.
+test(pa_not_equals) :- assert_not_equals(3, 4).
+test(pa_not_equals) :- assert_not_equals(dog, cat).
+test(pa_not_equals) :- assert_test_passes(assert_not_equals(3, 4)).
+test(pa_not_equals) :- assert_test_passes(assert_not_equals(dog, cat)).
+test(pa_not_equals) :- assert_test_fails(assert_not_equals(7, 7)).
+test(pa_not_equals) :- assert_test_fails(assert_not_equals(dog, dog)).
+% TODO See #21 test(pa_not_equals) :- assert_test_fails(assert_not_equals(9, 6+3)).
 
 test(pa_identity) :-
     assert_is(foo(cat, 3), foo(cat, 3)),
@@ -82,19 +56,13 @@ test(pa_identity_vs_equality) :-
     assert_test_fails(assert_is(A, B)),
     !.
 
-test(pa_unbound) :-
-    assert_test_passes(assert_unbound(_)),
-    A = 1,
-    assert_test_fails(assert_unbound(A)),
-    assert_test_fails(assert_unbound(cat)),
-    !.
+test(pa_unbound) :- assert_test_passes(assert_unbound(_)).
+test(pa_unbound) :- A = 1, assert_test_fails(assert_unbound(A)).
+test(pa_unbound) :- assert_test_fails(assert_unbound(cat)).
 
-test(pa_not_unbound) :-
-    A = 1,
-    assert_test_passes(assert_not_unbound(A)),
-    assert_test_passes(assert_not_unbound(1)),
-    assert_test_fails(assert_not_unbound(_)),
-    !.
+test(pa_not_unbound) :- A = 1, assert_test_passes(assert_not_unbound(A)).
+test(pa_not_unbound) :- assert_test_passes(assert_not_unbound(1)).
+test(pa_not_unbound) :- assert_test_fails(assert_not_unbound(_)).
 
 test(pa_in) :-
     % in list
@@ -124,10 +92,9 @@ test(pa_not_in) :-
     assert_test_fails(assert_not_in(3, Sortedset)),
     !.
 
-test(pa_is_number) :-
-    assert_test_passes(assert_type(3, number)),
-    assert_test_passes(assert_type(3.6, number)),
-    assert_test_fails(assert_type('hello world', number)),
+test(pa_is_float) :-
+    assert_test_passes(assert_type(3.6, float)),
+    assert_test_fails(assert_type(2, float)),
     !.
 
 test(pa_is_integer) :-
@@ -136,9 +103,10 @@ test(pa_is_integer) :-
     assert_test_fails(assert_type(bar, integer)),
     !.
 
-test(pa_is_float) :-
-    assert_test_passes(assert_type(3.6, float)),
-    assert_test_fails(assert_type(2, float)),
+test(pa_is_number) :-
+    assert_test_passes(assert_type(3, number)),
+    assert_test_passes(assert_type(3.6, number)),
+    assert_test_fails(assert_type('hello world', number)),
     !.
 
 test(pa_is_atom) :-
@@ -178,6 +146,7 @@ test(pa_not_type) :-
     assert_test_passes(assert_not_type(3, float)),
     assert_test_passes(assert_not_type(3.0, integer)),
     assert_test_passes(assert_not_type(foo, list)),
+    assert_test_fails(assert_not_type(foo, atom)),
     % etc
     !.
 
@@ -224,6 +193,5 @@ test(pa_output) :-
     assert_test_passes(assert_output(divmod(19, 4, Quotient, Remainder), [Quotient, Remainder], [4, 3])),
     assert_test_fails(assert_output(divmod(19, 4, Quotient, Remainder), [Quotient, Remainder], [14, 3])),
     !.
-    */
 
 :- end_tests(pa1).

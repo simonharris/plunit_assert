@@ -7,7 +7,6 @@
     assert_lte/2,
     assert_is/2,
     assert_is_not/2,
-    assert_exception/1,
     assert_false/1,
     assert_true/1,
     assert_unbound/1,
@@ -18,12 +17,14 @@
     assert_not_type/2,
     assert_output/3,
     % Meta stuff - not really part of the plunit_assert API
+    % assert_test_feedback/2,
     assert_test_fails/1,
     assert_test_passes/1
 ]).
 /** <module> The test API for plunit_assert
 
-A unit testing library for Prolog, providing an expressive xUnit-like API for PlUnit.
+A unit testing library for Prolog, providing an expressive xUnit-like API for
+PlUnit, and better feedback to the user on test fail.
 
 @author Simon Harding <github@pointbeing.net>
 @license MIT
@@ -37,81 +38,11 @@ A unit testing library for Prolog, providing an expressive xUnit-like API for Pl
 %
 % @arg Goal The goal to be tested
 % @see assertion/1
-% assert_true(Goal) :-
-%     assertion(Goal).
-
-
-% chatgpt orig
-% assert_true(Cond) :-
-%     setup_call_cleanup(
-%         asserta(
-%             (prolog:assertion_failed(Reason, Goal) :-
-%                 format(user_error, '[plunit_assert] Assertion failed: ~w~n', [Reason]),
-%                 format(user_error, '    in goal: ~q~n', [Goal]),
-%                 fail    % let PlUnit continue to treat it as a failure
-%             ),
-%             Ref
-%         ),
-%         assertion(Cond),
-%         erase(Ref)
-%     ).
-
-
-
 assert_true(Cond) :-
-    setup_call_cleanup(
-        (asserta((prolog:assertion_failed(_, _) :-
-                    pa_assert_true_failure(Cond)),
-                Ref),
-         nb_setval(at_assertion_failed_val, false)
-        ),
-        (catch(assertion(Cond), _, true),
-         nb_getval(at_assertion_failed_val, Failed)
-         ),
-        erase(Ref)
-    ),
-    Failed == false.
+    call_protected(Cond, fail_assert_true(Cond)).
 
-pa_assert_true_failure(Goal) :-
-    %format(user_error, '[plunit_assert] Assertion failed with reason: ~w~n', [Reason]),
-    format(user_error, '[plunit_assert] Asserted true but got false for: ~q', [Goal]),
-    nb_setval(at_assertion_failed_val, true).
-
-% TODO: this works, but the logic is inside out. I think
-assert_false(Cond) :-
-    setup_call_cleanup(
-        (asserta((prolog:assertion_failed(_, _) :-
-                    pa_assert_false_failure(Cond)),
-                Ref),
-         nb_setval(at_assertion_failed_val, false)
-        ),
-        (catch(assertion(\+ Cond), _, true),
-         nb_getval(at_assertion_failed_val, Failed)
-         ),
-        erase(Ref)
-    ),
-    Failed == false.
-
-pa_assert_false_failure(Goal) :-
-    %format(user_error, '[plunit_assert] Assertion failed with reason: ~w~n', [Reason]),
-    format(user_error, '[plunit_assert] Asserted false but got true for: ~q', [Goal]),
-    nb_setval(at_assertion_failed_val, true).
-
-
-% assert_true(Cond) :-
-%     setup_call_cleanup(
-%         (asserta((prolog:assertion_failed(Reason, Somegoal) :-
-%                     at_assertion_failed(Reason, Somegoal)),
-%                 Ref),
-%          nb_setval(at_assertion_failed_val, false)
-%         ),
-%         (catch(assertion(Cond), _, true),
-%          nb_getval(at_assertion_failed_val, Failed)
-%          ),
-%         erase(Ref)
-%     ),
-%     Failed == true.
-
+fail_assert_true(Goal) :-
+    feedback('Asserted true but got false for: ~q', [Goal]).
 
 %! assert_false(:Goal) is semidet
 %
@@ -119,8 +50,11 @@ pa_assert_false_failure(Goal) :-
 %
 % @arg Goal The goal to be tested
 % @see assertion/1
-% assert_false(Goal) :-
-%     assertion(\+ Goal).
+assert_false(Cond) :-
+    call_protected((\+ Cond), fail_assert_false(Cond)).
+
+fail_assert_false(Goal) :-
+    feedback('Asserted false but got true for: ~q', [Goal]).
 
 %! assert_equals(+A, +B) is semidet
 %
@@ -128,8 +62,14 @@ pa_assert_false_failure(Goal) :-
 %
 % @arg A The first of the terms to be compared
 % @arg B The second of the terms to be compared
+% assert_equals(A, B) :-
+%     assertion(A == B; A =:= B).
+
 assert_equals(A, B) :-
-    assertion(A == B; A =:= B).
+    call_protected(A == B; A =:= B, fail_assert_equals(A, B)).
+
+fail_assert_equals(A, B) :-
+    feedback('Asserted equal but ~q and ~q are not equal', [A, B]).
 
 %! assert_not_equals(+A, +B) is semidet
 %
@@ -139,7 +79,10 @@ assert_equals(A, B) :-
 % @arg B The second of the terms to be compared
 % @see assert_equals/2
 assert_not_equals(A, B) :-
-    assertion(A \= B).
+    call_protected(A \= B, fail_assert_not_equals(A, B)).
+
+fail_assert_not_equals(A, B) :-
+    feedback('Asserted ~q and ~q are not equal, but they are', [A, B]).
 
 %! assert_is(+A, +B) is semidet
 %
@@ -156,7 +99,10 @@ assert_not_equals(A, B) :-
 % @see assertion/1
 % @see ==/2
 assert_is(A, B) :-
-    assertion(A == B).
+    call_protected(A == B, fail_assert_is(A, B)).
+
+fail_assert_is(A, B) :-
+    feedback('Asserted identity but ~q and ~q are not identical', [A, B]).
 
 %! assert_is_not(+A, +B) is semidet
 %
@@ -166,22 +112,10 @@ assert_is(A, B) :-
 % @arg B The second of the terms to be compared
 % @see assert_is/2
 assert_is_not(A, B) :-
-    assertion(A \== B).
+    call_protected(A \== B, fail_assert_is_not(A, B)).
 
-%! assert_exception(:Goal) is semidet
-%
-% Test that an exception is thrown during the invocation of Goal
-%
-% @arg Goal The goal to be tested
-% @see assertion/1
-assert_exception(Goal) :-
-    setup_call_cleanup(
-        nb_setval(got_exception, false),
-        catch(Goal, _, nb_setval(got_exception, true)),
-        true
-    ),
-    nb_getval(got_exception, Gotex),
-    ( Gotex -> true; assertion(false) ).
+fail_assert_is_not(A, B) :-
+    feedback('Asserted ~q and ~q are not identical, but they are', [A, B]).
 
 %! assert_unbound(+Var) is semidet
 %
@@ -192,7 +126,10 @@ assert_exception(Goal) :-
 % @arg Var The variable to be tested for boundness
 % @see assertion/1
 assert_unbound(Var) :-
-    assertion(var(Var)).
+    call_protected(var(Var), fail_assert_unbound(Var)).
+
+fail_assert_unbound(Var) :-
+    feedback('Assertion that variable is unbound failed: it was bound to ~w', [Var]).
 
 %! assert_not_unbound(+Var) is semidet
 %
@@ -201,8 +138,10 @@ assert_unbound(Var) :-
 % @arg Var The variable to be tested for unboundness
 % @see assert_unbound/1
 assert_not_unbound(Var) :-
-    assertion(\+ var(Var)).
+    call_protected(nonvar(Var), fail_assert_not_unbound(Var)).
 
+fail_assert_not_unbound(_) :-
+    feedback('Assertion that variable is bound failed: it was unbound', []).
 
 %! assert_in(+Var, +Collection) is semidet
 %
@@ -215,10 +154,13 @@ assert_not_unbound(Var) :-
 % @arg Collection The haystack
 % @see assertion/1
 assert_in(Var, Collection) :-
-    assertion((
+    call_protected((
         member(Var, Collection) ;
         get_dict(Var, Collection, _)
-    )).
+    ), fail_assert_in(Var, Collection)).
+
+fail_assert_in(Var, Collection) :-
+    feedback('Asserted ~w is in ~w, but it isn\'t', [Var, Collection]).
 
 %! assert_not_in(+Var, +Collection) is semidet
 %
@@ -231,10 +173,13 @@ assert_in(Var, Collection) :-
 % @arg Collection The haystack
 % @see assert_in/2
 assert_not_in(Var, Collection) :-
-    assertion(\+ (
+    call_protected(\+ (
         member(Var, Collection) ;
         ( is_dict(Collection), get_dict(Var, Collection, _) )
-    )).
+    ), fail_assert_not_in(Var, Collection)).
+
+fail_assert_not_in(Var, Collection) :-
+    feedback('Asserted ~w is not in ~w, but it is', [Var, Collection]).
 
 %! assert_type(+Term, +Type) is semidet
 %
@@ -246,13 +191,18 @@ assert_not_in(Var, Collection) :-
 % @arg Type The type to be asserted
 % @tbd Compound types
 % @see assertion/1
-assert_type(Term, float) :- assertion(float(Term)).
-assert_type(Term, integer) :- assertion(integer(Term)).
-assert_type(Term, number) :- assertion(number(Term)).
-assert_type(Term, atom) :- assertion(atom(Term)).
-assert_type(Term, compound) :- assertion(compound(Term)).
-assert_type(Term, list) :- assertion(is_list(Term)).
-assert_type(Term, dict) :- assertion(is_dict(Term)).
+% @tbd Consider must_be/2 or similar
+assert_type(Term, float) :- call_protected(float(Term), fail_assert_type(float, Term)).
+assert_type(Term, integer) :- call_protected(integer(Term), fail_assert_type(integer, Term)).
+assert_type(Term, number) :- call_protected(number(Term), fail_assert_type(number, Term)).
+assert_type(Term, atom) :- call_protected(atom(Term), fail_assert_type(atom, Term)).
+assert_type(Term, compound) :- call_protected(compound(Term), fail_assert_type(compound, Term)).
+assert_type(Term, list) :- call_protected(is_list(Term), fail_assert_type(list, Term)).
+assert_type(Term, dict) :- call_protected(is_dict(Term), fail_assert_type(dict, Term)).
+
+fail_assert_type(Expected, Term) :-
+    term_type(Term, Got),
+    feedback('Asserted ~w is of type \'~w\' but got \'~w\'', [Term, Expected, Got]).
 
 %! assert_not_type(+Term, +Type) is semidet
 %
@@ -261,13 +211,16 @@ assert_type(Term, dict) :- assertion(is_dict(Term)).
 % @arg Term The term to be tested
 % @arg Type The type to be un-asserted
 % @see assert_type/2
-assert_not_type(Term, float) :- assertion(\+ float(Term)).
-assert_not_type(Term, integer) :- assertion(\+ integer(Term)).
-assert_not_type(Term, number) :- assertion(\+ number(Term)).
-assert_not_type(Term, atom) :- assertion(\+ atom(Term)).
-assert_not_type(Term, compound) :- assertion(\+ compound(Term)).
-assert_not_type(Term, list) :- assertion(\+ is_list(Term)).
-assert_not_type(Term, dict) :- assertion(\+ is_dict(Term)).
+assert_not_type(Term, float) :- call_protected(\+ float(Term), fail_assert_not_type(float, Term)).
+assert_not_type(Term, integer) :- call_protected(\+ integer(Term), fail_assert_not_type(integer, Term)).
+assert_not_type(Term, number) :- call_protected(\+ number(Term), fail_assert_not_type(number, Term)).
+assert_not_type(Term, atom) :- call_protected(\+ atom(Term), fail_assert_not_type(atom, Term)).
+assert_not_type(Term, compound) :- call_protected(\+ compound(Term), fail_assert_not_type(compound, Term)).
+assert_not_type(Term, list) :- call_protected(\+ is_list(Term), fail_assert_not_type(list, Term)).
+assert_not_type(Term, dict) :- call_protected(\+ is_dict(Term), fail_assert_not_type(dict, Term)).
+
+fail_assert_not_type(Expected, Term) :-
+    feedback('Asserted ~w is not of type \'~w\', but it is', [Term, Expected]).
 
 %! assert_gt(+A, +B) is semidet
 %
@@ -276,7 +229,10 @@ assert_not_type(Term, dict) :- assertion(\+ is_dict(Term)).
 % @arg A
 % @arg B
 assert_gt(A, B) :-
-    assertion(A > B).
+    call_protected(A > B, fail_assert_gt(A, B)).
+
+fail_assert_gt(A, B) :-
+    feedback('Does not hold: ~w is not greater than ~w', [A, B]).
 
 %! assert_lt(+A, +B) is semidet
 %
@@ -285,7 +241,10 @@ assert_gt(A, B) :-
 % @arg A
 % @arg B
 assert_lt(A, B) :-
-    assertion(A < B).
+    call_protected(A < B, fail_assert_lt(A, B)).
+
+fail_assert_lt(A, B) :-
+    feedback('Does not hold: ~w is not less than than ~w', [A, B]).
 
 %! assert_gte(+A, +B) is semidet
 %
@@ -294,7 +253,10 @@ assert_lt(A, B) :-
 % @arg A
 % @arg B
 assert_gte(A, B) :-
-    assertion(A >= B).
+    call_protected(A >= B, fail_assert_gte(A, B)).
+
+fail_assert_gte(A, B) :-
+    feedback('Does not hold: ~w is not greater than or equal to ~w', [A, B]).
 
 %! assert_lte(+A, +B) is semidet
 %
@@ -303,22 +265,31 @@ assert_gte(A, B) :-
 % @arg A
 % @arg B
 assert_lte(A, B) :-
-    assertion(A =< B).
+    call_protected(A =< B, fail_assert_lte(A, B)).
+
+fail_assert_lte(A, B) :-
+    feedback('Does not hold: ~w is not less than or equal to ~w', [A, B]).
+
 
 %! assert_output(:Goal, +Vars:list, +Expected:list) is semidet
 %
 % Test that a predicate's output arguments match what is expected
 %
 % @arg Goal The predicate to be invoked
-% @arg Vars The list of vars to be inspected
+% @arg Got The list of vars to be inspected
 % @arg Expected The expected values for Vars
 assert_output(Goal, Vars, Expected) :-
-    must_be(list, Vars),
-    must_be(list, Expected),
-    same_length(Vars, Expected),
-    once(call(Goal)),  % actually run the predicate
-    assertion(Vars == Expected).
-    % compare_vars(Vars, Expected).
+    call(Goal),
+    find_values(Vars, Actual),
+    call_protected(Actual == Expected, fail_assert_output(Expected, Actual)).
+
+find_values([], []).
+find_values([V|Vs], [Val|Vals]) :-
+    Val = V,
+    find_values(Vs, Vals).
+
+fail_assert_output(Expected, Actual) :-
+    feedback('Output does not match expected: expected ~w, got ~w', [Expected, Actual]).
 
 % TODO: report on individual vars
 % compare_vars([], []) :- !.
@@ -328,6 +299,40 @@ assert_output(Goal, Vars, Expected) :-
 %     ;   throw(error(pa_assertion_failed(V, E), _))
 %     ),
 %     compare_vars(Vs, Es).
+
+
+% private predicates ----------------------------------------------------------
+
+
+term_type(Term, Type) :-
+    (   var(Term) -> Type = variable
+    ;   atom(Term) -> Type = atom
+    ;   integer(Term) -> Type = integer
+    ;   float(Term) -> Type = float
+    ;   compound(Term) -> Type = compound
+    ;   string(Term) -> Type = string
+    ;   Type = unknown
+    ).
+
+feedback(Format, Args) :-
+    format(atom(Atom), Format, Args),
+    format(user_error, '[plunit_assert] ~s', [Atom]),
+    nl(user_error).
+
+call_protected(Cond, Callback) :-
+    setup_call_cleanup(
+        (asserta((prolog:assertion_failed(_, _) :-
+                    nb_setval(at_assertion_failed_val, true),
+                    call(Callback)),
+                Ref),
+         nb_setval(at_assertion_failed_val, false)
+        ),
+        (catch(assertion(Cond), _, true),
+         nb_getval(at_assertion_failed_val, Failed)
+         ),
+        erase(Ref)
+    ),
+    Failed == false.
 
 
 % meta-tests ------------------------------------------------------------------
@@ -345,23 +350,6 @@ assert_test_fails(Goal) :-
     ;   true
     ).
 
-% assert_test_fails(Goal) :-
-%     setup_call_cleanup(
-%         (asserta((prolog:assertion_failed(Reason, Somegoal) :-
-%                     pa_assertion_failed(Reason, Somegoal)),
-%                 Ref),
-%          nb_setval(assertion_failed, false)
-%         ),
-%         (catch(Goal, _, true),
-%          nb_getval(assertion_failed, Failed)
-%          ),
-%         erase(Ref)
-%     ),
-%     Failed == true.
-
-pa_assertion_failed(_, _) :-
-    nb_setval(assertion_failed, true).
-
 %! assert_test_passes(:Goal) is semidet
 %
 % Meta test to check that Goal would not trigger a PlUnit test fail
@@ -370,4 +358,18 @@ pa_assertion_failed(_, _) :-
 assert_test_passes(Goal) :-
     Goal.
 
+% These don't work. See #20
 
+% assert_test_feedback(TestGoal, Expected) :-
+%     with_output_to(atom(Actual), catch(TestGoal, _, true)),
+%     assert_equals(Actual, Expected).
+
+% assert_test_feedback(TestGoal, Expected) :-
+%     current_output(OldOut),
+%     with_output_to(atom(Actual), (
+%         set_output(user_error),
+%         catch(TestGoal, _, true),
+%         flush_output(user_error)
+%     )),
+%     set_output(OldOut),
+%     assert_equals(Expected, Actual).
