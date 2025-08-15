@@ -49,7 +49,7 @@ fail_assert_true(Goal) :-
 % Test that Goal fails and therefore is falsy
 %
 % @arg Goal The goal to be tested
-% @see assertion/1
+% @see assert_true/1
 assert_false(Cond) :-
     call_protected((\+ Cond), fail_assert_false(Cond)).
 
@@ -62,9 +62,6 @@ fail_assert_false(Goal) :-
 %
 % @arg A The first of the terms to be compared
 % @arg B The second of the terms to be compared
-% assert_equals(A, B) :-
-%     assertion(A == B; A =:= B).
-
 assert_equals(A, B) :-
     call_protected(A == B; A =:= B, fail_assert_equals(A, B)).
 

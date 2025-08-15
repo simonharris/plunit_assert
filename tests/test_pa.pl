@@ -145,9 +145,16 @@ test(pa_not_type) :-
     assert_test_passes(assert_not_type(3, atom)),
     assert_test_passes(assert_not_type(3, float)),
     assert_test_passes(assert_not_type(3.0, integer)),
-    assert_test_passes(assert_not_type(foo, list)),
-    assert_test_fails(assert_not_type(foo, atom)),
-    % etc
+    assert_test_passes(assert_not_type(cow, number)),
+    assert_test_passes(assert_not_type(3.0, dict)),
+    assert_test_passes(assert_not_type(3.0, compound)),
+    assert_test_fails(assert_not_type([], list)),
+    assert_test_fails(assert_not_type(cow, atom)),
+    assert_test_fails(assert_not_type(3.0, float)),
+    assert_test_fails(assert_not_type(9, integer)),
+    assert_test_fails(assert_not_type(3.142, number)),
+    assert_test_fails(assert_not_type(_{}, dict)),
+    assert_test_fails(assert_not_type(horse(dobbin), compound)),
     !.
 
 test(pa_gt) :-
