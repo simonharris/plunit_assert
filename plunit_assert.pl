@@ -67,7 +67,9 @@ assert_equals(A, B) :-
     call_protected(A == B; A =:= B, fail_assert_equals(A, B)).
 
 fail_assert_equals(A, B) :-
-    feedback('Asserted equal but ~q and ~q are not equal', [A, B]).
+    pretty_with_eval(A, PA),
+    pretty_with_eval(B, PB),
+    feedback('Asserted equal but ~w and ~w are not equal', [PA, PB]).
 
 %! assert_not_equals(+A, +B) is semidet
 %
@@ -328,7 +330,6 @@ fail_assert_output(Expected, Actual) :-
 
 
 base_type(atom).
-base_type(compound).
 base_type(dict).
 base_type(float).
 base_type(integer).
@@ -336,7 +337,6 @@ base_type(list).
 base_type(number).
 base_type(string).
 base_type(variable). % not really, but it prevents assert_type/2 testing it as a compound
-
 
 term_type(Term, Type) :-
     (   var(Term) -> Type = variable
@@ -369,6 +369,31 @@ call_protected(Cond, Callback) :-
         erase(Ref)
     ),
     Failed == false.
+/*
+pretty_with_eval(Term, Pretty) :-
+    (
+        % Try to evaluate as arithmetic
+        term_type(Term, TermType),
+        \+ base_type(TermType),
+        catch(Result is Term, _, fail
+    )
+    -> format(atom(Pretty), '~q (~q)', [Term, Result])
+    ; format(atom(Pretty), '~q', [Term])
+    ).
+*/
+
+pretty_with_eval(Term, Pretty) :-
+    (
+        term_type(Term, TermType),
+        \+ base_type(TermType),
+        catch(Result is Term, _, fail)
+    ->  (   Result == Term
+        ->  term_string(Term, Pretty)        % no need to show both
+        ;   format(string(Pretty), "~w (~w)", [Term, Result])
+        )
+    ;   term_string(Term, Pretty)
+    ).
+
 
 
 % meta-tests ------------------------------------------------------------------
