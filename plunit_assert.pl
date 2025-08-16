@@ -31,6 +31,7 @@ PlUnit, and better feedback to the user on test fail.
 */
 :- dynamic prolog:assertion_failed/2.
 :- multifile prolog:assertion_failed/2.
+:- discontiguous plunit_assert:assert_type/2.
 
 %! assert_true(:Goal) is semidet
 %
@@ -199,17 +200,27 @@ fail_assert_not_in(Var, Collection) :-
 % @tbd Compound types
 % @see assertion/1
 % @tbd Consider must_be/2 or similar
-assert_type(Term, float) :- call_protected(float(Term), fail_assert_type(float, Term)).
-assert_type(Term, integer) :- call_protected(integer(Term), fail_assert_type(integer, Term)).
-assert_type(Term, number) :- call_protected(number(Term), fail_assert_type(number, Term)).
-assert_type(Term, atom) :- call_protected(atom(Term), fail_assert_type(atom, Term)).
-assert_type(Term, compound) :- call_protected(compound(Term), fail_assert_type(compound, Term)).
-assert_type(Term, list) :- call_protected(is_list(Term), fail_assert_type(list, Term)).
-assert_type(Term, dict) :- call_protected(is_dict(Term), fail_assert_type(dict, Term)).
+assert_type(Term, float) :- call_protected(float(Term), fail_assert_type(float, Term)), !.
+assert_type(Term, integer) :- call_protected(integer(Term), fail_assert_type(integer, Term)), !.
+assert_type(Term, number) :- call_protected(number(Term), fail_assert_type(number, Term)), !.
+assert_type(Term, atom) :- call_protected(atom(Term), fail_assert_type(atom, Term)), !.
+assert_type(Term, compound) :- call_protected(compound(Term), fail_assert_type(compound, Term)), !.
+assert_type(Term, list) :- call_protected(is_list(Term), fail_assert_type(list, Term)), !.
+assert_type(Term, dict) :- call_protected(is_dict(Term), fail_assert_type(dict, Term)), !.
 
 fail_assert_type(Expected, Term) :-
     term_type(Term, Got),
     feedback('Asserted ~w is of type \'~w\' but got \'~w\'', [Term, Expected, Got]).
+
+% and for specific compounds...
+assert_type(Term, Expected) :-
+    compound(Term),
+    \+ base_type(Expected),
+    functor(Term, Got, _),
+    call_protected(Expected == Got, fail_assert_type_compound(Expected, Term, Got)), !.
+
+fail_assert_type_compound(Expected, Term, Got) :-
+    feedback('Asserted compound ~w is of type \'~w\' but got \'~w\'', [Term, Expected, Got]).
 
 %! assert_not_type(+Term, +Type) is semidet
 %
@@ -218,13 +229,13 @@ fail_assert_type(Expected, Term) :-
 % @arg Term The term to be tested
 % @arg Type The type to be un-asserted
 % @see assert_type/2
-assert_not_type(Term, float) :- call_protected(\+ float(Term), fail_assert_not_type(float, Term)).
-assert_not_type(Term, integer) :- call_protected(\+ integer(Term), fail_assert_not_type(integer, Term)).
-assert_not_type(Term, number) :- call_protected(\+ number(Term), fail_assert_not_type(number, Term)).
-assert_not_type(Term, atom) :- call_protected(\+ atom(Term), fail_assert_not_type(atom, Term)).
-assert_not_type(Term, compound) :- call_protected(\+ compound(Term), fail_assert_not_type(compound, Term)).
-assert_not_type(Term, list) :- call_protected(\+ is_list(Term), fail_assert_not_type(list, Term)).
-assert_not_type(Term, dict) :- call_protected(\+ is_dict(Term), fail_assert_not_type(dict, Term)).
+assert_not_type(Term, float) :- call_protected(\+ float(Term), fail_assert_not_type(float, Term)), !.
+assert_not_type(Term, integer) :- call_protected(\+ integer(Term), fail_assert_not_type(integer, Term)), !.
+assert_not_type(Term, number) :- call_protected(\+ number(Term), fail_assert_not_type(number, Term)), !.
+assert_not_type(Term, atom) :- call_protected(\+ atom(Term), fail_assert_not_type(atom, Term)), !.
+assert_not_type(Term, compound) :- call_protected(\+ compound(Term), fail_assert_not_type(compound, Term)), !.
+assert_not_type(Term, list) :- call_protected(\+ is_list(Term), fail_assert_not_type(list, Term)), !.
+assert_not_type(Term, dict) :- call_protected(\+ is_dict(Term), fail_assert_not_type(dict, Term)), !.
 
 fail_assert_not_type(Expected, Term) :-
     feedback('Asserted ~w is not of type \'~w\', but it is', [Term, Expected]).
@@ -277,7 +288,6 @@ assert_lte(A, B) :-
 fail_assert_lte(A, B) :-
     feedback('Does not hold: ~w is not less than or equal to ~w', [A, B]).
 
-
 %! assert_output(:Goal, +Vars:list, +Expected:list) is semidet
 %
 % Test that a predicate's output arguments match what is expected
@@ -310,6 +320,16 @@ fail_assert_output(Expected, Actual) :-
 
 
 % private predicates ----------------------------------------------------------
+
+
+base_type(atom).
+base_type(compound).
+base_type(dict).
+base_type(float).
+base_type(integer).
+base_type(list).
+base_type(number).
+base_type(string).
 
 
 term_type(Term, Type) :-

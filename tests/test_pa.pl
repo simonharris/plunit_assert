@@ -98,17 +98,13 @@ test(pa_is_float) :-
     assert_test_fails(assert_type(2, float)),
     !.
 
-test(pa_is_integer) :-
-    assert_test_passes(assert_type(3, integer)),
-    assert_test_fails(assert_type(2.0, integer)),
-    assert_test_fails(assert_type(bar, integer)),
-    !.
+test(pa_is_integer) :- assert_test_passes(assert_type(3, integer)).
+test(pa_is_integer) :- assert_test_fails(assert_type(2.0, integer)).
+test(pa_is_integer) :- assert_test_fails(assert_type(bar, integer)).
 
-test(pa_is_number) :-
-    assert_test_passes(assert_type(3, number)),
-    assert_test_passes(assert_type(3.6, number)),
-    assert_test_fails(assert_type('hello world', number)),
-    !.
+test(pa_is_number) :- assert_test_passes(assert_type(3, number)).
+test(pa_is_number) :- assert_test_passes(assert_type(3.6, number)).
+test(pa_is_number) :- assert_test_fails(assert_type('hello world', number)).
 
 test(pa_is_atom) :-
     assert_test_passes(assert_type(sup, atom)),
@@ -140,6 +136,10 @@ test(pa_is_dict) :-
     assert_test_fails(assert_type(a, dict)),
     assert_test_fails(assert_type(_Var, dict)),
     !.
+
+test(pa_is_specific_compound) :- assert_test_passes(assert_type(clue(sum, eq, 1, 2, 3), clue)).
+test(pa_is_specific_compound) :- assert_test_fails(assert_type(clue(sum, eq, 1, 2, 3), integer)).
+test(pa_is_specific_compound) :- assert_test_fails(assert_type(clue(sum, eq, 1, 2, 3), somethingelse)).
 
 test(pa_not_type) :-
     assert_test_passes(assert_not_type(3, list)),
