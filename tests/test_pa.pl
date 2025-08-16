@@ -137,6 +137,18 @@ test(pa_is_dict) :-
     assert_test_fails(assert_type(_Var, dict)),
     !.
 
+test(pa_is_string) :-
+    assert_test_passes(assert_type("hello world", string)),
+    assert_test_fails(assert_type(foo(bar), string)),
+    assert_test_fails(assert_type(foo, string)),
+    assert_test_fails(assert_type(a, string)),
+    assert_test_fails(assert_type(_Var, string)),
+
+    Mystring = "wassup world",
+    assert_test_passes(assert_type(Mystring, string)),
+    assert_test_fails(assert_type(Mystring, integer)),
+    !.
+
 test(pa_is_specific_compound) :- assert_test_passes(assert_type(clue(sum, eq, 1, 2, 3), clue)).
 test(pa_is_specific_compound) :- assert_test_fails(assert_type(clue(sum, eq, 1, 2, 3), integer)).
 test(pa_is_specific_compound) :- assert_test_fails(assert_type(clue(sum, eq, 1, 2, 3), somethingelse)).
@@ -149,6 +161,7 @@ test(pa_not_type) :-
     assert_test_passes(assert_not_type(cow, number)),
     assert_test_passes(assert_not_type(3.0, dict)),
     assert_test_passes(assert_not_type(3.0, compound)),
+    assert_test_passes(assert_not_type(3.0, string)),
     assert_test_fails(assert_not_type([], list)),
     assert_test_fails(assert_not_type(cow, atom)),
     assert_test_fails(assert_not_type(3.0, float)),
@@ -156,6 +169,7 @@ test(pa_not_type) :-
     assert_test_fails(assert_not_type(3.142, number)),
     assert_test_fails(assert_not_type(_{}, dict)),
     assert_test_fails(assert_not_type(horse(dobbin), compound)),
+    assert_test_fails(assert_not_type("some words", string)),
     !.
 
 test(pa_gt) :-

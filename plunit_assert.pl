@@ -207,6 +207,7 @@ assert_type(Term, atom) :- call_protected(atom(Term), fail_assert_type(atom, Ter
 assert_type(Term, compound) :- call_protected(compound(Term), fail_assert_type(compound, Term)), !.
 assert_type(Term, list) :- call_protected(is_list(Term), fail_assert_type(list, Term)), !.
 assert_type(Term, dict) :- call_protected(is_dict(Term), fail_assert_type(dict, Term)), !.
+assert_type(Term, string) :- call_protected(string(Term), fail_assert_type(string, Term)), !.
 
 fail_assert_type(Expected, Term) :-
     term_type(Term, Got),
@@ -236,9 +237,13 @@ assert_not_type(Term, atom) :- call_protected(\+ atom(Term), fail_assert_not_typ
 assert_not_type(Term, compound) :- call_protected(\+ compound(Term), fail_assert_not_type(compound, Term)), !.
 assert_not_type(Term, list) :- call_protected(\+ is_list(Term), fail_assert_not_type(list, Term)), !.
 assert_not_type(Term, dict) :- call_protected(\+ is_dict(Term), fail_assert_not_type(dict, Term)), !.
+assert_not_type(Term, string) :- call_protected(\+ string(Term), fail_assert_not_type(string, Term)), !.
 
 fail_assert_not_type(Expected, Term) :-
     feedback('Asserted ~w is not of type \'~w\', but it is', [Term, Expected]).
+
+% TODO:
+% could add assert_not_type/2 for specific compounds, but I don't see a case for it
 
 %! assert_gt(+A, +B) is semidet
 %
@@ -319,7 +324,7 @@ fail_assert_output(Expected, Actual) :-
 %     compare_vars(Vs, Es).
 
 
-% private predicates ----------------------------------------------------------
+% private rules ---------------------------------------------------------------
 
 
 base_type(atom).
@@ -330,14 +335,18 @@ base_type(integer).
 base_type(list).
 base_type(number).
 base_type(string).
+base_type(variable). % not really, but it prevents assert_type/2 testing it as a compound
 
 
 term_type(Term, Type) :-
     (   var(Term) -> Type = variable
     ;   atom(Term) -> Type = atom
-    ;   integer(Term) -> Type = integer
-    ;   float(Term) -> Type = float
     ;   compound(Term) -> Type = compound
+    ;   is_dict(Term) -> Type = dict
+    ;   float(Term) -> Type = float
+    ;   integer(Term) -> Type = integer
+    ;   is_list(Term) -> Type = list
+    % number would never hit by this point
     ;   string(Term) -> Type = string
     ;   Type = unknown
     ).
