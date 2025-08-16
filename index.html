@@ -13,10 +13,13 @@
 <h1 class="wiki">plunit_assert</h1>
 
 <p>
-Provides a more expressive API for PlUnit by implementing xUnit-like test predicates such as <a href="plunit_assert.html#assert_true/1">assert_true/1</a> and <a href="plunit_assert.html#assert_type/2">assert_type/2</a>.</p>
+PlUnit is a unit testing library for Prolog. Its goals are:</p>
 
-<p>
-A longer-term goal is also that it should provide more helpful failure messages.</p>
+<ol>
+<li>provide a more expressive and familiar API for PlUnit by implementing xUnit-like test predicates such as <a href="plunit_assert.html#assert_true/1">assert_true/1</a> and <a href="plunit_assert.html#assert_type/2">assert_type/2</a></li>
+<li>provide significantly more helpful and user-friendly feedback on test fail</li>
+<li>full compatibility with PlUnit: you can still use <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a> if you wish</li>
+</ol>
 
 <h2 class="wiki">API Documentation</h2>
 
@@ -38,10 +41,30 @@ Packages are hosted here:</p>
 Thus, the library can currently be installed using:</p>
 
 <pre class="code" ext="">
-?- pack_install(plunit_assert, [url('https://packages.pointbeing.net/plunit_assert/plunit_assert-0.1.0.tgz')]).</pre>
+?- pack_install(plunit_assert, [url('https://packages.pointbeing.net/plunit_assert/plunit_assert-0.2.0.tgz')]).</pre>
 
 <p>
-Once the library is at a more stable release there is a plan to make it discoverable (see [#15](../../<a class="extmanual" href="http://www.swi-prolog.org/pldoc/man?predicate=issues/15">issues/15</a>)).</p>
+Once at version 1.0.0, plunit_assert will be published and discoverable via <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=pack_list/1">pack_list/1</a>.</p>
+
+<h2 class="wiki">Examples</h2>
+
+<pre class="code" ext="">
+?- assert_type(3.0, boolean).
+[plunit_assert] Asserted 3.0 is of type 'boolean' but got 'float'
+false.</pre>
+
+<pre class="code" ext="">
+?- assert_equals(3+1, 4).
+true.
+
+?- assert_is(3+1, 4).
+[plunit_assert] Asserted identity but 3+1 and 4 are not identical
+false.</pre>
+
+<pre class="code" ext="">
+?- assert_lte(3^7, 6+9.6).
+[plunit_assert] Comparison failed: 3^7 (2187) is not less than or equal to 6+9.6 (15.6)
+false.</pre>
 
 <h2 class="wiki plfiles">Prolog files</h2>
 
