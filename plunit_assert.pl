@@ -259,7 +259,9 @@ assert_gt(A, B) :-
     call_protected(A > B, fail_assert_gt(A, B)).
 
 fail_assert_gt(A, B) :-
-    feedback('Does not hold: ~w is not greater than ~w', [A, B]).
+    pretty_with_eval(A, PA),
+    pretty_with_eval(B, PB),
+    feedback('Comparison failed: ~w is not greater than ~', [PA, PB]).
 
 %! assert_lt(+A, +B) is semidet
 %
@@ -271,7 +273,9 @@ assert_lt(A, B) :-
     call_protected(A < B, fail_assert_lt(A, B)).
 
 fail_assert_lt(A, B) :-
-    feedback('Does not hold: ~w is not less than than ~w', [A, B]).
+    pretty_with_eval(A, PA),
+    pretty_with_eval(B, PB),
+    feedback('Comparison failed: ~w is not less than ~w', [PA, PB]).
 
 %! assert_gte(+A, +B) is semidet
 %
@@ -283,7 +287,9 @@ assert_gte(A, B) :-
     call_protected(A >= B, fail_assert_gte(A, B)).
 
 fail_assert_gte(A, B) :-
-    feedback('Does not hold: ~w is not greater than or equal to ~w', [A, B]).
+    pretty_with_eval(A, PA),
+    pretty_with_eval(B, PB),
+    feedback('Comparison failed: ~w is not greater than or equal to ~w', [PA, PB]).
 
 %! assert_lte(+A, +B) is semidet
 %
@@ -295,7 +301,9 @@ assert_lte(A, B) :-
     call_protected(A =< B, fail_assert_lte(A, B)).
 
 fail_assert_lte(A, B) :-
-    feedback('Does not hold: ~w is not less than or equal to ~w', [A, B]).
+    pretty_with_eval(A, PA),
+    pretty_with_eval(B, PB),
+    feedback('Comparison failed: ~w is not less than or equal to ~w', [PA, PB]).
 
 %! assert_output(:Goal, +Vars:list, +Expected:list) is semidet
 %

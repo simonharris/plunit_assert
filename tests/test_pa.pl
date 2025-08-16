@@ -175,6 +175,7 @@ test(pa_not_type) :-
 test(pa_gt) :-
     assert_test_passes(assert_gt(9, 3)),
     assert_test_passes(assert_gt(9, 1+2)),
+    assert_test_passes(assert_gt(9^7, 1+2)),
     assert_test_passes(assert_gt(9, 3.0)),
     assert_test_fails(assert_gt(9, 9)),
     assert_test_fails(assert_gt(3, 9.2)),
@@ -182,30 +183,33 @@ test(pa_gt) :-
     !.
 
 test(pa_lt) :-
+    assert_test_passes(assert_lt(3, 9.2)),
+    assert_test_passes(assert_lt(3, 8)),
     assert_test_fails(assert_lt(9, 3)),
     assert_test_fails(assert_lt(9, 1+2)),
     assert_test_fails(assert_lt(9, 3.0)),
     assert_test_fails(assert_lt(9, 9)),
-    assert_test_passes(assert_lt(3, 9.2)),
-    assert_test_passes(assert_lt(3, 8)),
+    assert_test_fails(assert_lt(3^7, 8-1)),
     !.
 
 test(pa_gte) :-
     assert_test_passes(assert_gte(9, 3)),
     assert_test_passes(assert_gte(9, 1+2)),
-    assert_test_passes(assert_gte(9, 3.0)),
+    assert_test_passes(assert_gte(9^7, 3.0)),
     assert_test_passes(assert_gte(9, 9)),
     assert_test_fails(assert_gte(3, 9.2)),
     assert_test_fails(assert_gte(3, 8)),
+    assert_test_fails(assert_gte(3, 2*8^3)),
     !.
 
 test(pa_lte) :-
-    assert_test_fails(assert_lte(9, 3)),
-    assert_test_fails(assert_lte(9, 1+2)),
-    assert_test_fails(assert_lte(9, 3.0)),
     assert_test_passes(assert_lte(9, 9)),
     assert_test_passes(assert_lte(3, 9.2)),
     assert_test_passes(assert_lte(3, 8)),
+    assert_test_passes(assert_lte(3^2, 8+1)),
+    assert_test_fails(assert_lte(9, 3)),
+    assert_test_fails(assert_lte(9, 1+2)),
+    assert_test_fails(assert_lte(9^2, 3.0)),
     !.
 
 test(pa_output) :-
