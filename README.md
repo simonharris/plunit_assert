@@ -23,7 +23,7 @@ https://packages.pointbeing.net/plunit_assert/
 Thus, the library can currently be installed using:
 
 ```
-?- pack_install(plunit_assert, [url('https://packages.pointbeing.net/plunit_assert/plunit_assert-0.2.0.tgz')]).
+?- pack_install(plunit_assert, [url('https://packages.pointbeing.net/plunit_assert/plunit_assert-0.2.1.tgz')]).
 ```
 
 Once at version 1.0.0, plunit_assert will be published and discoverable via `pack_list/1`.
