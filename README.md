@@ -1,11 +1,11 @@
 # plunit_assert
 
-Provides a more expressive API for PlUnit by implementing xUnit-like test predicates such as `assert_true/1` and `assert_type/2`.
+PlUnit is a unit testing library for Prolog. Its goals are:
 
 
-
-
-A longer-term goal is also that it should provide more helpful failure messages.
+1. provide a more expressive and familiar API for PlUnit by implementing xUnit-like test predicates such as `assert_true/1` and `assert_type/2`
+2. provide significantly more helpful and user-friendly feedback on test fail
+3. full compatibility with PlUnit: you can still use  `assertion/1` if you wish
 
 
 ## API Documentation
@@ -23,11 +23,32 @@ https://packages.pointbeing.net/plunit_assert/
 Thus, the library can currently be installed using:
 
 ```
-?- pack_install(plunit_assert, [url('https://packages.pointbeing.net/plunit_assert/plunit_assert-0.1.0.tgz')]).
+?- pack_install(plunit_assert, [url('https://packages.pointbeing.net/plunit_assert/plunit_assert-0.2.0.tgz')]).
 ```
 
-Once the library is at a more stable release there is a plan to make it discoverable (see [#15](../../issues/15)).
+Once at version 1.0.0, plunit_assert will be published and discoverable via `pack_list/1`.
 
+## Examples
+```
+?- assert_type(3.0, boolean).
+[plunit_assert] Asserted 3.0 is of type 'boolean' but got 'float'
+false.
+```
+
+```
+?- assert_equals(3+1, 4).
+true.
+
+?- assert_is(3+1, 4).
+[plunit_assert] Asserted identity but 3+1 and 4 are not identical
+false.
+```
+
+```
+?- assert_lte(3^7, 6+9.6).
+[plunit_assert] Comparison failed: 3^7 (2187) is not less than or equal to 6+9.6 (15.6)
+false.
+```
 
 
 
