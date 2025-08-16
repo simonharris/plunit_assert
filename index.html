@@ -38,13 +38,23 @@ Packages are hosted here:</p>
 <a href="https://packages.pointbeing.net/plunit_assert/">https://packages.pointbeing.net/plunit_assert/</a></p>
 
 <p>
-Thus, the library can currently be installed using:</p>
+Thus, the current version of library can currently be installed using:</p>
 
 <pre class="code" ext="">
 ?- pack_install(plunit_assert, [url('https://packages.pointbeing.net/plunit_assert/plunit_assert-0.2.1.tgz')]).</pre>
 
 <p>
-Once at version 1.0.0, plunit_assert will be published and discoverable via <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=pack_list/1">pack_list/1</a>.</p>
+It is also discoverable via <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=pack_list/1">pack_list/1</a>:</p>
+
+<pre class="code" ext="">
+?- pack_list(plunit_assert).
+% Contacting server at https://www.swi-prolog.org/pack/query ... ok
+p plunit_assert@0.2.1       - An expressive xUnit-like API for PlUnit with more helpful fail messages
+true.
+
+?- pack_install(plunit_assert).
+...etc...
+</pre>
 
 <h2 class="wiki">Examples</h2>
 
