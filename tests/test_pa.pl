@@ -149,6 +149,22 @@ test(pa_is_string) :-
     assert_test_fails(assert_type(Mystring, integer)),
     !.
 
+test(pa_is_boolean) :-
+    assert_test_passes(assert_type(true, boolean)),
+    assert_test_passes(assert_type('true', boolean)),
+    assert_test_passes(assert_type(false, boolean)),
+    assert_test_passes(assert_type('false', boolean)),
+    assert_test_fails(assert_type([], boolean)),
+    assert_test_fails(assert_type(cat(true), boolean)),
+    !.
+test(pa_is_boolean) :-
+    assert_test_fails(assert_type("true", boolean)),
+    assert_test_fails(assert_type("false", boolean)),
+    !.
+
+test(pa_not_found) :-
+    assert_test_fails(assert_type(hello, world)).
+
 test(pa_is_specific_compound) :- assert_test_passes(assert_type(clue(sum, eq, 1, 2, 3), clue)).
 test(pa_is_specific_compound) :- assert_test_fails(assert_type(clue(sum, eq, 1, 2, 3), integer)).
 test(pa_is_specific_compound) :- assert_test_fails(assert_type(clue(sum, eq, 1, 2, 3), somethingelse)).
@@ -162,6 +178,7 @@ test(pa_not_type) :-
     assert_test_passes(assert_not_type(3.0, dict)),
     assert_test_passes(assert_not_type(3.0, compound)),
     assert_test_passes(assert_not_type(3.0, string)),
+    assert_test_passes(assert_not_type(3.0, boolean)),
     assert_test_fails(assert_not_type([], list)),
     assert_test_fails(assert_not_type(cow, atom)),
     assert_test_fails(assert_not_type(3.0, float)),
@@ -170,6 +187,11 @@ test(pa_not_type) :-
     assert_test_fails(assert_not_type(_{}, dict)),
     assert_test_fails(assert_not_type(horse(dobbin), compound)),
     assert_test_fails(assert_not_type("some words", string)),
+    !.
+% if we don't know what the type is, Prolog can't swear it isn't that type
+% - closed word assumption
+test(pa_assert_not_type_unknown) :-
+    assert_test_fails(assert_not_type("some words", i_made_this_up)),
     !.
 
 test(pa_gt) :-

@@ -32,6 +32,7 @@ PlUnit, and better feedback to the user on test fail.
 :- dynamic prolog:assertion_failed/2.
 :- multifile prolog:assertion_failed/2.
 :- discontiguous plunit_assert:assert_type/2.
+:- discontiguous plunit_assert:assert_not_type/2.
 
 %! assert_true(:Goal) is semidet
 %
@@ -204,6 +205,7 @@ fail_assert_not_in(Var, Collection) :-
 % @tbd Compound types
 % @see assertion/1
 % @tbd Consider must_be/2 or similar
+assert_type(Term, boolean) :- call_protected(is_boolean(Term), fail_assert_type(boolean, Term)), !.
 assert_type(Term, float) :- call_protected(float(Term), fail_assert_type(float, Term)), !.
 assert_type(Term, integer) :- call_protected(integer(Term), fail_assert_type(integer, Term)), !.
 assert_type(Term, number) :- call_protected(number(Term), fail_assert_type(number, Term)), !.
@@ -227,6 +229,16 @@ assert_type(Term, Expected) :-
 fail_assert_type_compound(Expected, Term, Got) :-
     feedback('Asserted compound ~w is of type \'~w\' but got \'~w\'', [Term, Expected, Got]).
 
+% and finally, some made up type that doesn't exist
+assert_type(Term, Expected) :-
+    \+ compound(Term),
+    \+ base_type(Expected),
+    fail_assert_type_not_found(Expected),
+    fail.
+
+fail_assert_type_not_found(Expected) :-
+    feedback('Assertion failed: \'~q\' is not a known type', [Expected]).
+
 %! assert_not_type(+Term, +Type) is semidet
 %
 % Test that Var is not of type Type
@@ -234,6 +246,7 @@ fail_assert_type_compound(Expected, Term, Got) :-
 % @arg Term The term to be tested
 % @arg Type The type to be un-asserted
 % @see assert_type/2
+assert_not_type(Term, boolean) :- call_protected(\+ is_boolean(Term), fail_assert_not_type(float, Term)), !.
 assert_not_type(Term, float) :- call_protected(\+ float(Term), fail_assert_not_type(float, Term)), !.
 assert_not_type(Term, integer) :- call_protected(\+ integer(Term), fail_assert_not_type(integer, Term)), !.
 assert_not_type(Term, number) :- call_protected(\+ number(Term), fail_assert_not_type(number, Term)), !.
@@ -245,6 +258,13 @@ assert_not_type(Term, string) :- call_protected(\+ string(Term), fail_assert_not
 
 fail_assert_not_type(Expected, Term) :-
     feedback('Asserted ~w is not of type \'~w\', but it is', [Term, Expected]).
+
+% and finally, some made up type that doesn't exist
+assert_not_type(Term, Expected) :-
+    \+ compound(Term),
+    \+ base_type(Expected),
+    fail_assert_type_not_found(Expected),
+    fail.
 
 % TODO:
 % could add assert_not_type/2 for specific compounds, but I don't see a case for it
@@ -340,13 +360,14 @@ fail_assert_output(Expected, Actual) :-
 
 
 base_type(atom).
+base_type(boolean).
 base_type(dict).
 base_type(float).
 base_type(integer).
 base_type(list).
 base_type(number).
 base_type(string).
-base_type(variable). % not really, but it prevents assert_type/2 testing it as a compound
+%base_type(variable). % not really, but it prevents assert_type/2 testing it as a compound
 
 term_type(Term, Type) :-
     (   var(Term) -> Type = variable
@@ -358,7 +379,7 @@ term_type(Term, Type) :-
     ;   is_list(Term) -> Type = list
     % number would never hit by this point
     ;   string(Term) -> Type = string
-    ;   Type = unknown
+    %;   Type = unknown
     ).
 
 feedback(Format, Args) :-
@@ -404,6 +425,8 @@ pretty_with_eval(Term, Pretty) :-
     ;   term_string(Term, Pretty)
     ).
 
+is_boolean(Term) :-
+    (Term == true; Term == false).
 
 
 % meta-tests ------------------------------------------------------------------
