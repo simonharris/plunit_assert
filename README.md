@@ -20,7 +20,7 @@ Packages are hosted here:
 
 https://packages.pointbeing.net/plunit_assert/
 
-Thus, the current version of library can currently be installed using:
+Thus, the current version of the library can currently be installed using:
 
 ```
 ?- pack_install(plunit_assert, [url('https://packages.pointbeing.net/plunit_assert/plunit_assert-0.2.1.tgz')]).
