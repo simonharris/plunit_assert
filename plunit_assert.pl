@@ -246,7 +246,7 @@ fail_assert_type_not_found(Expected) :-
 % @arg Term The term to be tested
 % @arg Type The type to be un-asserted
 % @see assert_type/2
-assert_not_type(Term, boolean) :- call_protected(\+ is_boolean(Term), fail_assert_not_type(float, Term)), !.
+assert_not_type(Term, boolean) :- call_protected(\+ is_boolean(Term), fail_assert_not_type(boolean, Term)), !.
 assert_not_type(Term, float) :- call_protected(\+ float(Term), fail_assert_not_type(float, Term)), !.
 assert_not_type(Term, integer) :- call_protected(\+ integer(Term), fail_assert_not_type(integer, Term)), !.
 assert_not_type(Term, number) :- call_protected(\+ number(Term), fail_assert_not_type(number, Term)), !.
