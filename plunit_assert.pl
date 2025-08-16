@@ -92,7 +92,9 @@ equal_after_eval(A, B) :-
     A == B.
 
 fail_assert_not_equals(A, B) :-
-    feedback('Asserted ~q and ~q are not equal, but they are', [A, B]).
+    pretty_with_eval(A, PA),
+    pretty_with_eval(B, PB),
+    feedback('Asserted ~w and ~w are not equal, but they are', [PA, PB]).
 
 %! assert_is(+A, +B) is semidet
 %
