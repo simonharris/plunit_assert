@@ -7,6 +7,11 @@ PlUnit is a unit testing library for Prolog. Its goals are:
 2. provide significantly more helpful and user-friendly feedback on test fail
 3. full compatibility with PlUnit: you can still use  `assertion/1` if you wish
 
+Whilst this wasn't an explicit design goal initially, another benefit of `plunit_asssert` is:
+
+4. it can easily be leveraged by calling its test predicates directly within the Prolog REPL, which can be a trying experience with manual calls to `assertion/1`. 
+
+See this in action under [Examples](#Examples) below.
 
 ## API Documentation
 
