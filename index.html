@@ -18,7 +18,10 @@ PlUnit is a unit testing library for Prolog. Its goals are:</p>
 <ol>
 <li>provide a more expressive and familiar API for PlUnit by implementing xUnit-like test predicates such as <a href="plunit_assert.html#assert_true/1">assert_true/1</a> and <a href="plunit_assert.html#assert_type/2">assert_type/2</a></li>
 <li>provide significantly more helpful and user-friendly feedback on test fail</li>
-<li>full compatibility with PlUnit: you can still use <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a> if you wish</li>
+<li>full compatibility with PlUnit: you can still use <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a> if you wish
+Whilst this wasn't an explicit design goal initially, another benefit of <code>plunit_asssert</code> is:</li>
+<li>it can easily be leveraged by calling its test predicates directly within the Prolog REPL, which can be a trying experience with manual calls to <a class="builtin" href="http://www.swi-prolog.org/pldoc/man?predicate=assertion/1">assertion/1</a>.
+See this in action under <a href="#Examples">Examples</a> below.</li>
 </ol>
 
 <h2 class="wiki">API Documentation</h2>
