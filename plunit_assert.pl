@@ -19,7 +19,8 @@
     % Meta stuff - not really part of the plunit_assert API
     % assert_test_feedback/2,
     assert_test_fails/1,
-    assert_test_passes/1
+    assert_test_passes/1,
+    assert_test_output/2
 ]).
 :- multifile prolog:message//1.
 /** <module> The test API for plunit_assert
@@ -383,12 +384,12 @@ term_type(Term, Type) :-
     %;   Type = unknown
     ).
 
-prolog:message(plunit_assert(Msg)) -->
+prolog:message(plunit_message(Msg)) -->
     [ '[plunit_assert] ~w'-[Msg] ].
 
 feedback(Format, Args) :-
     format(atom(Msg), Format, Args),
-    print_message(error, plunit_assert(Msg)).
+    print_message(error, plunit_message(Msg)).
 
 call_protected(Cond, Callback) :-
     setup_call_cleanup(
@@ -424,6 +425,14 @@ is_boolean(Term) :-
 % meta-tests ------------------------------------------------------------------
 
 
+%! assert_test_passes(:Goal) is semidet
+%
+% Meta test to check that Goal would not trigger a PlUnit test fail
+%
+% @arg Goal The goal to be queried in the form of a plunit_assert predicate
+assert_test_passes(Goal) :-
+    Goal.
+
 %! assert_test_fails(:Goal) is semidet
 %
 % Meta test to check that Goal would trigger a PlUnit test fail
@@ -433,7 +442,7 @@ assert_test_fails(Goal) :-
     % Phase 1: silence all messages from the Goal
     setup_call_cleanup(
         asserta(
-            (user:message_hook(plunit_assert(_), _, _) :- !, true),
+            (user:message_hook(plunit_message(_), _, _) :- !, true),
             Ref
         ),
         (Goal -> Success = true ; Success = false),
@@ -446,10 +455,30 @@ assert_test_fails(Goal) :-
     ;   true
     ).
 
-%! assert_test_passes(:Goal) is semidet
+%! assert_test_output(:Goal, +Expected) is semidet
 %
-% Meta test to check that Goal would not trigger a PlUnit test fail
+% Meta test to check we get roughly the right fail messages back
 %
 % @arg Goal The goal to be queried in the form of a plunit_assert predicate
-assert_test_passes(Goal) :-
-    Goal.
+% @arg Expected An expected substring of the fail message
+assert_test_output(Goal, Expected) :-
+    setup_call_cleanup(
+        asserta((user:message_hook(Term, _Kind, _Lines) :-
+                   Term = plunit_message(Msg),
+                   assertz(captured_message(Msg)),
+                   fail),
+                Ref),
+        (   retractall(captured_message(_)),
+            (   Goal -> true ; true ),
+            (   captured_message(Msg),
+                sub_string(Msg, _, _, _, Expected)
+            ->  true
+            ;   captured_message(Got),
+                feedback('Expected output not found: ~q', [Expected]),
+                feedback('Actual message was: ~q', [Got]),
+                fail
+            )
+        ),
+        erase(Ref)
+    ).
+

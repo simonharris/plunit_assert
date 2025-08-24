@@ -3,13 +3,6 @@
 
 :- begin_tests(pa1).
 
-test(meta_tests) :-
-    assert_test_passes(assert_test_fails(assert_true(false))),
-    assert_test_fails(assert_test_passes(assert_true(false))),
-    assert_test_passes(assert_test_passes(assert_true(true))),
-    assert_test_fails(assert_test_fails(assert_true(true))),
-    !.
-
 test(pa_truth) :-
      assert_test_passes(assert_true(true)),
      assert_test_fails(assert_true(false)),
@@ -243,3 +236,25 @@ test(pa_output) :-
     !.
 
 :- end_tests(pa1).
+
+
+:- begin_tests(meta_tests).
+
+% Asserted true but got false for: 1-2
+
+test(pa_pass_fail) :-
+    assert_test_passes(assert_test_fails(assert_true(false))),
+    assert_test_fails(assert_test_passes(assert_true(false))),
+    assert_test_passes(assert_test_passes(assert_true(true))),
+    assert_test_fails(assert_test_fails(assert_true(true))),
+    !.
+
+test(pa_eror_msg) :-
+    assert_test_output(assert_true(1=2), 'Asserted true but got false for: 1=2'),
+    assert_test_fails(
+        assert_test_output(assert_true(true), 'Anything')
+    ),
+    !.
+
+
+:- end_tests(meta_tests).
