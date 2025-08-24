@@ -21,6 +21,7 @@
     assert_test_fails/1,
     assert_test_passes/1
 ]).
+:- multifile prolog:message//1.
 /** <module> The test API for plunit_assert
 
 A unit testing library for Prolog, providing an expressive xUnit-like API for
@@ -382,9 +383,9 @@ term_type(Term, Type) :-
     %;   Type = unknown
     ).
 
-feedback(Format, Args) :-
-    format(atom(Atom), Format, Args),
-    format(user_error, '[plunit_assert] ~s', [Atom]).
+% feedback(Format, Args) :-
+%     format(atom(Atom), Format, Args),
+%     format(user_error, '[plunit_assert] ~s', [Atom]).
 
 call_protected(Cond, Callback) :-
     setup_call_cleanup(
@@ -437,12 +438,41 @@ is_boolean(Term) :-
 % Meta test to check that Goal would trigger a PlUnit test fail
 %
 % @arg Goal The goal to be queried in the form of a plunit_assert predicate
+% assert_test_fails(Goal) :-
+%     (   Goal
+%     ->  feedback('Asserted test failure but test passed: ~q', [Goal]),
+%         fail
+%     ;   true
+%     ).
+
+
 assert_test_fails(Goal) :-
-    (   Goal
+    % Phase 1: silence all messages from the Goal
+    setup_call_cleanup(
+        asserta(
+            (user:message_hook(plunit_assert(_), _, _) :- !, true),
+            Ref
+        ),
+        (Goal -> Success = true ; Success = false),
+        erase(Ref)
+    ),
+    % Phase 2: report if the Goal unexpectedly succeeded
+    (   Success == true
     ->  feedback('Asserted test failure but test passed: ~q', [Goal]),
         fail
     ;   true
     ).
+
+
+
+
+prolog:message(plunit_assert(Msg)) -->
+    [ '[plunit_assert] ~w'-[Msg] ].
+
+feedback(Format, Args) :-
+    format(atom(Msg), Format, Args),
+    print_message(error, plunit_assert(Msg)).
+
 
 %! assert_test_passes(:Goal) is semidet
 %
