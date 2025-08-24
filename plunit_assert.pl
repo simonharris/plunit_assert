@@ -368,7 +368,7 @@ base_type(integer).
 base_type(list).
 base_type(number).
 base_type(string).
-%base_type(variable). % not really, but it prevents assert_type/2 testing it as a compound
+
 
 term_type(Term, Type) :-
     (   var(Term) -> Type = variable
@@ -383,9 +383,12 @@ term_type(Term, Type) :-
     %;   Type = unknown
     ).
 
-% feedback(Format, Args) :-
-%     format(atom(Atom), Format, Args),
-%     format(user_error, '[plunit_assert] ~s', [Atom]).
+prolog:message(plunit_assert(Msg)) -->
+    [ '[plunit_assert] ~w'-[Msg] ].
+
+feedback(Format, Args) :-
+    format(atom(Msg), Format, Args),
+    print_message(error, plunit_assert(Msg)).
 
 call_protected(Cond, Callback) :-
     setup_call_cleanup(
@@ -401,18 +404,6 @@ call_protected(Cond, Callback) :-
         erase(Ref)
     ),
     Failed == false.
-/*
-pretty_with_eval(Term, Pretty) :-
-    (
-        % Try to evaluate as arithmetic
-        term_type(Term, TermType),
-        \+ base_type(TermType),
-        catch(Result is Term, _, fail
-    )
-    -> format(atom(Pretty), '~q (~q)', [Term, Result])
-    ; format(atom(Pretty), '~q', [Term])
-    ).
-*/
 
 pretty_with_eval(Term, Pretty) :-
     (
@@ -438,14 +429,6 @@ is_boolean(Term) :-
 % Meta test to check that Goal would trigger a PlUnit test fail
 %
 % @arg Goal The goal to be queried in the form of a plunit_assert predicate
-% assert_test_fails(Goal) :-
-%     (   Goal
-%     ->  feedback('Asserted test failure but test passed: ~q', [Goal]),
-%         fail
-%     ;   true
-%     ).
-
-
 assert_test_fails(Goal) :-
     % Phase 1: silence all messages from the Goal
     setup_call_cleanup(
@@ -463,17 +446,6 @@ assert_test_fails(Goal) :-
     ;   true
     ).
 
-
-
-
-prolog:message(plunit_assert(Msg)) -->
-    [ '[plunit_assert] ~w'-[Msg] ].
-
-feedback(Format, Args) :-
-    format(atom(Msg), Format, Args),
-    print_message(error, plunit_assert(Msg)).
-
-
 %! assert_test_passes(:Goal) is semidet
 %
 % Meta test to check that Goal would not trigger a PlUnit test fail
@@ -481,19 +453,3 @@ feedback(Format, Args) :-
 % @arg Goal The goal to be queried in the form of a plunit_assert predicate
 assert_test_passes(Goal) :-
     Goal.
-
-% These don't work. See #20
-
-% assert_test_feedback(TestGoal, Expected) :-
-%     with_output_to(atom(Actual), catch(TestGoal, _, true)),
-%     assert_equals(Actual, Expected).
-
-% assert_test_feedback(TestGoal, Expected) :-
-%     current_output(OldOut),
-%     with_output_to(atom(Actual), (
-%         set_output(user_error),
-%         catch(TestGoal, _, true),
-%         flush_output(user_error)
-%     )),
-%     set_output(OldOut),
-%     assert_equals(Expected, Actual).
