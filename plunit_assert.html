@@ -296,7 +296,13 @@ Supported types are: number, integer, float, atom, compound, list, dict</p>
 <dt class="tag">Arguments:</dt><dd>
 
 <table class="arglist">
-<tr><td><var>Goal</var></td><td class="argdescr">- The goal to be queried in the form of a plunit_assert predicate</td></tr>
+<tr><td><var>Goal</var></td><td class="argdescr">- The goal to be queried in the form of a plunit_assert predicate
+<code>assert_test_fails(Goal)</code> :-
+( <var>Goal</var>
+-&gt; <code>feedback('Asserted test failure but test passed: ~q', [Goal])</code>,
+fail
+; true
+).</td></tr>
 </table>
 
 </dd>
