@@ -290,6 +290,19 @@ Supported types are: number, integer, float, atom, compound, list, dict</p>
 </dl>
 
 </dd>
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_passes/1"><b class="pred">assert_test_passes</b><var class="arglist">(:Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check that <var>Goal</var> would not trigger a PlUnit test fail
+
+<dl class="tags">
+<dt class="tag">Arguments:</dt><dd>
+
+<table class="arglist">
+<tr><td><var>Goal</var></td><td class="argdescr">- The goal to be queried in the form of a plunit_assert predicate</td></tr>
+</table>
+
+</dd>
+</dl>
+
+</dd>
 <dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_fails/1"><b class="pred">assert_test_fails</b><var class="arglist">(:Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check that <var>Goal</var> would trigger a PlUnit test fail
 
 <dl class="tags">
@@ -303,13 +316,14 @@ Supported types are: number, integer, float, atom, compound, list, dict</p>
 </dl>
 
 </dd>
-<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_passes/1"><b class="pred">assert_test_passes</b><var class="arglist">(:Goal)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check that <var>Goal</var> would not trigger a PlUnit test fail
+<dt class="pubdef"><span style="float:right">&nbsp;</span><a name="assert_test_message/2"><b class="pred">assert_test_message</b><var class="arglist">(:Goal, +Expected)</var></a> is <b class="det">semidet</b></dt><dd class="defbody">Meta test to check we get roughly the right fail messages back
 
 <dl class="tags">
 <dt class="tag">Arguments:</dt><dd>
 
 <table class="arglist">
 <tr><td><var>Goal</var></td><td class="argdescr">- The goal to be queried in the form of a plunit_assert predicate</td></tr>
+<tr><td><var>Expected</var></td><td class="argdescr">- An expected substring of the fail message</td></tr>
 </table>
 
 </dd>
