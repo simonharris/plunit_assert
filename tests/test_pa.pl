@@ -249,10 +249,20 @@ test(pa_pass_fail) :-
     assert_test_fails(assert_test_fails(assert_true(true))),
     !.
 
-test(pa_eror_msg) :-
+test(pa_error_msg) :-
     assert_test_message(assert_true(1=2), 'Asserted true but got false for: 1=2'),
     assert_test_fails(
         assert_test_message(assert_true(true), 'Anything')
+    ),
+    !.
+
+test(pa_this_is_getting_silly_now) :-
+    assert_test_message(
+        assert_test_message(
+            assert_true(false),
+            'my hovercraft is full of eels'
+        ),
+        'Expected message not found'
     ),
     !.
 
