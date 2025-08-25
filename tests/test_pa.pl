@@ -250,9 +250,9 @@ test(pa_pass_fail) :-
     !.
 
 test(pa_eror_msg) :-
-    assert_test_output(assert_true(1=2), 'Asserted true but got false for: 1=2'),
+    assert_test_message(assert_true(1=2), 'Asserted true but got false for: 1=2'),
     assert_test_fails(
-        assert_test_output(assert_true(true), 'Anything')
+        assert_test_message(assert_true(true), 'Anything')
     ),
     !.
 

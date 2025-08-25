@@ -20,7 +20,7 @@
     % assert_test_feedback/2,
     assert_test_fails/1,
     assert_test_passes/1,
-    assert_test_output/2
+    assert_test_message/2
 ]).
 :- multifile prolog:message//1.
 /** <module> The test API for plunit_assert
@@ -455,13 +455,13 @@ assert_test_fails(Goal) :-
     ;   true
     ).
 
-%! assert_test_output(:Goal, +Expected) is semidet
+%! assert_test_message(:Goal, +Expected) is semidet
 %
 % Meta test to check we get roughly the right fail messages back
 %
 % @arg Goal The goal to be queried in the form of a plunit_assert predicate
 % @arg Expected An expected substring of the fail message
-assert_test_output(Goal, Expected) :-
+assert_test_message(Goal, Expected) :-
     setup_call_cleanup(
         asserta((user:message_hook(Term, _Kind, _Lines) :-
                    Term = plunit_message(Msg),
@@ -474,11 +474,10 @@ assert_test_output(Goal, Expected) :-
                 sub_string(Msg, _, _, _, Expected)
             ->  true
             ;   captured_message(Got),
-                feedback('Expected output not found: ~q', [Expected]),
+                feedback('Expected message not found: ~q', [Expected]),
                 feedback('Actual message was: ~q', [Got]),
                 fail
             )
         ),
         erase(Ref)
     ).
-
