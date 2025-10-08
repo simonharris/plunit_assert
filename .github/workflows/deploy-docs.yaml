@@ -22,12 +22,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y swi-prolog
 
+      - name: Run tests
+        run: |
+          make test
+
       - name: Generate documentation
+        if: success()
         run: |
           # swipl -g "load_files(plunit_assert), doc_save(., [format(html), doc_root(doc), title('PlUnit Assert Documentation')])" -t halt
           swipl -g "load_files(plunit_assert), doc_save(., [format(html), doc_root('./docs'), title('API Documentation for plunit_assert')])" -t halt
 
       - name: Deploy to GitHub Pages
+        if: success()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
