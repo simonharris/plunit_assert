@@ -209,7 +209,7 @@ test(pa_lt) :-
 
 test(pa_gte) :-
     assert_test_passes(assert_gte(9, 3)),
-    assert_test_passes(assert_gte(9, 1+2)),
+    assert_test_passes(assert_gte(9, 1+22)),
     assert_test_passes(assert_gte(9^7, 3.0)),
     assert_test_passes(assert_gte(9, 9)),
     assert_test_fails(assert_gte(3, 9.2)),
