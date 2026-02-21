@@ -1,5 +1,7 @@
 # plunit_assert
 
+[![Run Tests](https://github.com/simonharris/plunit_assert/actions/workflows/test.yaml/badge.svg)](https://github.com/simonharris/plunit_assert/actions/workflows/test.yaml)
+
 PlUnit is a unit testing library for Prolog. Its goals are:
 
 
